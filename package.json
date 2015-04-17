@@ -1,0 +1,28 @@
+{
+  "name": "fast-devel-server",
+  "description": "Fast developer server for displaying markdown and others",
+  "version": "0.0.1",
+  "author": "Codenautas <codenautas@googlegroups.com>",
+  "license": "MIT",
+  "repository": "codenautas/fast-devel-server",
+  "contributors": [{
+    "name": "Emilio Platzer", "email": "emilioplatzer@gmail.com"
+  }],
+  "dependencies": {
+    "express": "^0.0.1",
+    "markdown-it": "^0.0.1"
+  },
+  "devDependencies": {
+    "istanbul": "~0.3.6",
+    "mocha": "~2.1.0"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec --bail --check-leaks test/",
+    "test-ci": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
+    "start": "node example/server.js"
+  }
+}
