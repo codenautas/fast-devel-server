@@ -8,6 +8,3 @@
  * Module dependencies.
  */
 
-exports = module.exports = function structureValidator(opts){
-    throw new Error("Not implemented yet!");
-}
