@@ -2,12 +2,12 @@
 Fast developer server for displaying markdown and others
 
 ![designing](https://img.shields.io/badge/stability-desgining-red.svg)
-[![npm version](https://img.shields.io/npm/v/fast-delvel-server.svg)](https://npmjs.org/package/fast-delvel-server)	
-[![downloads](https://img.shields.io/npm/dm/fast-delvel-server.svg)](https://npmjs.org/package/fast-delvel-server)	
-[![build](https://img.shields.io/travis/codenautas/fast-delvel-server/master.svg)](https://travis-ci.org/codenautas/fast-delvel-server)	la cambiaría por Build
-[![coverage](https://img.shields.io/coveralls/codenautas/fast-delvel-server/master.svg)](https://coveralls.io/r/codenautas/fast-delvel-server)	
-[![climate](https://codeclimate.com/github/codenautas/fast-delvel-server/badges/gpa.svg)](https://codeclimate.com/github/codenautas/fast-delvel-server)	
-[![dependencies](https://img.shields.io/david/codenautas/fast-delvel-server.svg)](https://david-dm.org/codenautas/fast-delvel-server)
+[![npm version](https://img.shields.io/npm/v/fast-devel-server.svg)](https://npmjs.org/package/fast-devel-server)
+[![downloads](https://img.shields.io/npm/dm/fast-devel-server.svg)](https://npmjs.org/package/fast-devel-server)
+[![build](https://img.shields.io/travis/codenautas/fast-devel-server/master.svg)](https://travis-ci.org/codenautas/fast-devel-server)
+[![coverage](https://img.shields.io/coveralls/codenautas/fast-devel-server/master.svg)](https://coveralls.io/r/codenautas/fast-devel-server)
+[![climate](https://codeclimate.com/github/codenautas/fast-devel-server/badges/gpa.svg)](https://codeclimate.com/github/codenautas/fast-devel-server)
+[![dependencies](https://img.shields.io/david/codenautas/fast-devel-server.svg)](https://david-dm.org/codenautas/fast-devel-server)
 
 ## Install
 
