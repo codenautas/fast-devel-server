@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var fsPromise = require('fs-promise');
 var jade = require('jade');
+var serveIndex = require('serve-index');
 
 var extensionServeStatic = require('extension-serve-static');
 
@@ -42,6 +43,12 @@ app.use('/info',function(req,res,next){
         next(err);
     });
 });
+
+app.use('/file',serveIndex('..', {
+    hidden: true,
+    icons: true,
+    view: 'details'
+}))
 
 app.use('/file',extensionServeStatic('..', {
     index: ['index.html'], 
