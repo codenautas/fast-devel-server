@@ -1,0 +1,5 @@
+This is a .txt
+
+No fromat inside
+
+No other info!

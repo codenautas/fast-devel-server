@@ -1,0 +1,9 @@
+.lateralDiv{
+    float:left; 
+    border-right:2px solid green; 
+    width:20px
+}
+
+.mainIframe{
+    float:left;
+}

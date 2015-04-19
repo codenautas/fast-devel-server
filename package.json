@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -11,8 +11,11 @@
   "dependencies": { 
     "lodash": "^3.7.0",
     "express": "^4.12.3",
+    "extension-serve-static": "^0.1.6",
+    "promise": "~7.0.0",
+    "fs-promise": "~0.3.1", 
     "markdown-it": "^4.1.1",
-    "extension-serve-static": "^0.1.6"
+    "jade": "^1.9.2"
   },
   "devDependencies": {
     "istanbul": "~0.3.13",
@@ -25,6 +28,6 @@
     "test": "mocha --reporter spec --bail --check-leaks test/",
     "test-ci": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
-    "start": "node server.js"
+    "start": "node server/server.js"
   }
 }
