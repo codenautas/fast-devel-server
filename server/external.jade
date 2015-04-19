@@ -1,0 +1,20 @@
+﻿doctype html
+html
+  body
+    ul
+      mixin flag(lang)
+        img(src='/file/fast-devel-server/node_modules/multilang/img/flag-lang-'+lang+'.png', title=lang)
+      li
+        +flag("en")
+        | You get this file because
+        ol
+          li you copy and paste the URL or
+          li reopen a navigator in a crash situation and you option to restore the state
+        | in a window and the URL is like <b>localhost/auto/!EXTERNAL</b>
+      li
+        +flag("es")
+        | Si estás viendo esta página puede ser porque
+        ol
+          li copiaste y pegaste la dirección o
+          li elegiste restaurar una sesión del navegador (al reabrirlo)
+        | y la URL se parece a <b>localhost/auto/!EXTERNAL</b>

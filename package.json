@@ -14,9 +14,10 @@
     "extension-serve-static": "^0.1.6",
     "promise": "~7.0.0",
     "fs-promise": "~0.3.1", 
-    "markdown-it": "^4.1.1",
+    "markdown-it": "^4.1.2",
     "jade": "^1.9.2",
-    "serve-index": "^1.6.3"
+    "serve-index": "^1.6.3",
+    "multilang": "^0.0.4"
   },
   "devDependencies": {
     "istanbul": "~0.3.13",
