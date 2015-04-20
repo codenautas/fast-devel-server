@@ -63,6 +63,14 @@ app.use('/info',function(req,res,next){
     });
 });
 
+serveIndex.dateTimeToString=function(mtime){
+    var today=new Date();
+    if(mtime.toDateString()==today.toDateString()){
+        return 'today ' + mtime.toLocaleTimeString();
+    }
+    return mtime.toDateString() + ' ' + mtime.toLocaleTimeString()
+}
+
 app.use('/file',serveIndex('..', {
     hidden: true,
     icons: true,
