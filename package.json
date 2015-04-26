@@ -12,16 +12,18 @@
     "lodash": "^3.7.0",
     "express": "^4.12.3",
     "extension-serve-static": "^0.1.6",
-    "promise": "~7.0.0",
+    "promise": "~7.0.1",
     "fs-promise": "~0.3.1", 
-    "markdown-it": "^4.1.2",
+    "markdown-it": "^4.2.0",
     "jade": "^1.9.2",
-    "serve-index": "https://github.com/emilioplatzer/serve-index/tarball/master",
+    "serve-index": "^1.6.3",
     "multilang": "^0.0.4"
   },
   "devDependencies": {
     "istanbul": "~0.3.13",
-    "mocha": "~2.2.4"
+    "mocha": "~2.2.4",
+    "after": "~0.8.1",
+    "supertest": "~0.15.0"
   },
   "engines": {
     "node": ">= 0.10.0"

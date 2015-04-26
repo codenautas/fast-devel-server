@@ -24,7 +24,7 @@ var externalInfoTemplate=null;
 
 app.use('/auto/!EXTERNAL',function(req,res){
     Promise.resolve(!!externalInfoTemplate).then(function(catched){
-        return catched||fsPromise.readFile('./server/external.jade',{encode: 'utf8'}).then(function(jadeContent){
+        return catched||fsPromise.readFile('./server/external.jade',{encoding: 'utf8'}).then(function(jadeContent){
             externalInfoTemplate=jade.compile(jadeContent);
         });
     }).then(function(){
@@ -38,7 +38,7 @@ app.use('/auto/!EXTERNAL',function(req,res){
 });
 
 
-fsPromise.readFile('./server/auto.jade',{encode: 'utf8'}).then(function(jadeContent){
+fsPromise.readFile('./server/auto.jade',{encoding: 'utf8'}).then(function(jadeContent){
     var autoTemplate=jade.compile(jadeContent);
     app.use('/auto',function(req,res,next){
         res.end(autoTemplate({path:req.path}));
