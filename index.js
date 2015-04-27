@@ -31,7 +31,6 @@ module.exports = {
                             ),
                             function(match,prefix,date,sufix){
                                 var dateObject=moment(new Date(date));
-                                console.log(file,'=',dateObject.format('DD/MM/YYYY HH:mm:ss'));
                                 return prefix+dateObject.format('DD/MM/YYYY HH:mm:ss')+sufix;
                             }
                         )

@@ -7,6 +7,7 @@ var Promise = require('promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
 var serveIndex = require('serve-index');
+var path = require('path');
 
 var extensionServeStatic = require('extension-serve-static');
 var FDH = require('..');
@@ -79,6 +80,29 @@ app.use('/file',serveIndex('..', {
     icons: true,
     view: 'details'
 }))
+
+var serveJade=function serveJade(root, opts){
+    return function(req,res,next){
+        if(path.extname(req.path)!=='.jade'){
+            next();
+        }else{
+            var fileName=root+'/'+req.path;
+            Promise.resolve().then(function(){
+                return fsPromise.readFile(fileName, {encoding: 'utf8'});
+            }).then(function(content){
+                return jade.render(content,{});
+            }).catch(function(err){
+                return '<H1>ERROR</H1><PRE>'+err;
+            }).then(function(buf){
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.setHeader('Content-Length', buf.length);
+                res.end(buf);
+            });
+        }
+    };
+}
+
+app.use('/file',serveJade('..', {}));
 
 app.use('/file',extensionServeStatic('..', {
     index: ['index.html'], 
