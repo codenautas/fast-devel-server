@@ -14,7 +14,7 @@ describe('dependencies', function(){
         var toLower=function toLower(x){
             return _.isString(x)?x.toLowerCase():x;
         }
-        var datePattern='\\w\\w\\w \\w\\w\\w \\d\\d \\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d';
+        var datePattern='\\w\\w\\w \\w\\w\\w \\d?\\d \\d\\d\\d\\d \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
         var dateRegExp=new RegExp(datePattern,'g');
         it('control complete output', function(done){
             Promise.resolve().then(function(){
@@ -41,8 +41,6 @@ describe('dependencies', function(){
                 }).then(function(){
                     var resMock={
                         setHeader:function setHeader(name, value){
-                            // res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                            // res.setHeader('Content-Length', buf.length);
                             res.setHeader(name, value);
                         },
                         end:function end(content){

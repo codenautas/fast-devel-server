@@ -85,7 +85,8 @@ app.use('/file',serveIndex('..', {
 
 var serveConvert=function serveConvert(root, opts){
     return function(req,res,next){
-        var convert=serveConvert.converters[path.extname(req.path).substring(1)];
+        var ext=path.extname(req.path).substring(1);
+        var convert=serveConvert.converters[ext];
         if(!convert){
             next();
         }else{
@@ -111,6 +112,9 @@ serveConvert.converters={
     },
     markdown:function(content){
         return markdown.render(content);
+    },
+    js:function(content){
+        return markdown.render('```js\n'+content+'\n```');
     }
 }
 
