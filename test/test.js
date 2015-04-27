@@ -7,6 +7,7 @@ var request = require('supertest');
 var serveIndex = require('serve-index');
 var Promise = require('Promise');
 var expect = require('expect.js');
+var FDS = require('..');
  
 describe('dependencies', function(){
     describe('serve-index', function(){
@@ -113,6 +114,17 @@ describe('dependencies', function(){
         });
     });
 });
+
+describe('my service functions', function(){
+    before(function(){
+        serveIndex.html=FDH.html4serveIndex;
+    });
+    describe('serve-index.html', function(){
+        
+    
+    });
+});
+    
 
 function createServer(dir, opts) {
   var _serveIndex = serveIndex(dir, opts)

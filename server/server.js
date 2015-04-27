@@ -9,6 +9,9 @@ var jade = require('jade');
 var serveIndex = require('serve-index');
 
 var extensionServeStatic = require('extension-serve-static');
+var FDH = require('..');
+
+FDH.html4serveIndex(serveIndex);
 
 var server = app.listen(54321, function() {
     console.log('Listening on port %d', server.address().port);

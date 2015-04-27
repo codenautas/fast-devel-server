@@ -17,7 +17,8 @@
     "markdown-it": "^4.2.0",
     "jade": "^1.9.2",
     "serve-index": "^1.6.3",
-    "multilang": "^0.0.4"
+    "multilang": "^0.0.4",
+    "moment": "^2.10.2"
   },
   "devDependencies": {
     "istanbul": "~0.3.13",
@@ -32,6 +33,7 @@
   "scripts": {
     "test": "mocha --reporter spec --bail --check-leaks test/",
     "test-ci": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/",
+    "test-ci z": "istanbul cover --hook-run-in-context node_modules/mocha/bin/_mocha -- -R spec test/",
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/",
     "start": "node server/server.js"
   }
