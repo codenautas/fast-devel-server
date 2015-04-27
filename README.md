@@ -21,7 +21,7 @@ $ npm install fast-devel-server
 npm start
 ```
 
-And then use your naviagor for render or view and auto refresh your data
+And then use your navigator for rendering or viewing and auto refresh your data
 ![in your navigator put http://localhost:54321/auto/your-package/examples/example.txt](https://github.com/codenautas/fast-devel-server/blob/master/examples/example.png)
 
 ***You don't need to press F5!***
