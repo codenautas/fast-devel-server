@@ -5,14 +5,17 @@ var http = require('http');
 var fsPromise = require('fs-promise');
 var request = require('supertest');
 var serveIndex = require('serve-index');
-var Promise = require('Promise');
+var Promise = require('promise');
 var expect = require('expect.js');
 var FDS = require('..');
  
 describe('dependencies', function(){
     describe('serve-index', function(){
-        var datePattern='\w\w\w \w\w\w \d\d \d\d\d\d \d\d:\d\d:\d\d';
-        var dateRegExp=new RegExp(datePattern);
+        var toLower=function toLower(x){
+            return _.isString(x)?x.toLowerCase():x;
+        }
+        var datePattern='\\w\\w\\w \\w\\w\\w \\d\\d \\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d';
+        var dateRegExp=new RegExp(datePattern,'g');
         it('control complete output', function(done){
             Promise.resolve().then(function(){
                 return fsPromise.readFile('test/complete-output.html',{encoding: 'utf8'});
@@ -75,7 +78,7 @@ describe('dependencies', function(){
             var expectedHeaderOutput;
             var contentRegExp;
             serveIndex.html=function htmlMock(req, res, files, next, dir, showUp, icons, path, view, template, stylesheet){
-                expect([files, dir, showUp, icons, path, view, template, stylesheet]).to.eql(expectedInputParameters);
+                expect([files, dir, showUp, icons, path, view, template, stylesheet].map(toLower)).to.eql(expectedInputParameters);
                 var resMock={
                     setHeader:function setHeader(name, value){
                         expect(JSON.stringify(expectedHeaderOutput)).to.contain(JSON.stringify([name, value])); // feo, esperando https://github.com/Automattic/expect.js/issues/134
