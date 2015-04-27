@@ -6,6 +6,8 @@ var app = express();
 var Promise = require('promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
+var MarkdownIt = require('markdown-it');
+var markdown = new MarkdownIt();
 var serveIndex = require('serve-index');
 var path = require('path');
 
@@ -81,17 +83,18 @@ app.use('/file',serveIndex('..', {
     view: 'details'
 }))
 
-var serveJade=function serveJade(root, opts){
+var serveConvert=function serveConvert(root, opts){
     return function(req,res,next){
-        if(path.extname(req.path)!=='.jade'){
+        var convert=serveConvert.converters[path.extname(req.path).substring(1)];
+        if(!convert){
             next();
         }else{
             var fileName=root+'/'+req.path;
             Promise.resolve().then(function(){
                 return fsPromise.readFile(fileName, {encoding: 'utf8'});
-            }).then(function(content){
-                return jade.render(content,{});
-            }).catch(function(err){
+            }).then(
+                convert
+            ).catch(function(err){
                 return '<H1>ERROR</H1><PRE>'+err;
             }).then(function(buf){
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -102,7 +105,18 @@ var serveJade=function serveJade(root, opts){
     };
 }
 
-app.use('/file',serveJade('..', {}));
+serveConvert.converters={
+    jade:function(content){
+        return jade.render(content,{});
+    },
+    markdown:function(content){
+        return markdown.render(content);
+    }
+}
+
+serveConvert.converters.md=serveConvert.converters.markdown;
+
+app.use('/file',serveConvert('..', {}));
 
 app.use('/file',extensionServeStatic('..', {
     index: ['index.html'], 
