@@ -6,6 +6,8 @@ var app = express();
 var Promise = require('promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
+var multilang = require('multilang');
+
 if(false){
     var MarkdownIt = require('markdown-it');
     var markdown = new MarkdownIt();
@@ -86,9 +88,23 @@ var validExts=_.keys(mime.types);
 
 app.use('/info',function(req,res,next){
     //filter path
-    fsPromise.stat('../'+req.path).then(function(stat){
+    var info={};
+    var fileName='../'+req.path;
+    fsPromise.stat(fileName).then(function(stat){
+        info.mtime=stat.mtime;
+        if(path.extname(req.path)=='.md'){
+            return fsPromise.readFile(fileName, {encoding: 'utf8'}).then(function(content){
+                var originFileName=content.split('\n')[0].replace(/^.*<!-- multilang from\s*(\S*)\s*$/,'$1');
+                return {originFileName: originFileName};
+            });
+        };
+        return {};
+    }).then(function(moreInfo){
         res.set('Content-Type', 'application/json');
-        res.end(JSON.stringify({mtime:stat.mtime}));
+        for(var attr in moreInfo){
+            info[attr]=moreInfo[attr];
+        }
+        res.end(JSON.stringify(info));
     }).catch(function(err){
         console.log('ERROR /info stat');
         console.log(err);
