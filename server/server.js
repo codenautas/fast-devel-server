@@ -6,8 +6,35 @@ var app = express();
 var Promise = require('promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
-var MarkdownIt = require('markdown-it');
-var markdown = new MarkdownIt();
+if(false){
+    var MarkdownIt = require('markdown-it');
+    var markdown = new MarkdownIt();
+    var markdownRender=function markdownRender(content){
+        return Promise.resolve().then(function(){
+            return markdown.render(content);
+        });
+    }
+}else if(false){
+    var markdown = require( "markdown" ).markdown;
+    var markdownRender=function markdownRender(content){
+        return Promise.resolve().then(function(){
+            return markdown.toHTML(content,'Maruku');
+        });
+    }
+}else if(true){
+    var brucedown  = require( "brucedown" );
+    var markdownRender=function markdownRender(content){
+        return new Promise(function(resolve, reject){
+            brucedown(content,function(err,ok){
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(ok);
+                }
+            });
+        });
+    }
+}
 var serveIndex = require('serve-index');
 var path = require('path');
 
@@ -108,17 +135,16 @@ var serveConvert=function serveConvert(root, opts){
 
 serveConvert.converters={
     jade:function(content){
-        return jade.render(content,{});
+        return Promise.resolve().then(function(){
+            return jade.render(content,{});
+        });
     },
-    markdown:function(content){
-        return markdown.render(content);
-    },
+    markdown:markdownRender,
+    md:markdownRender,
     js:function(content){
-        return markdown.render('```js\n'+content+'\n```');
+        return markdownRender('```js\n'+content+'\n```');
     }
 }
-
-serveConvert.converters.md=serveConvert.converters.markdown;
 
 app.use('/file',serveConvert('..', {}));
 
