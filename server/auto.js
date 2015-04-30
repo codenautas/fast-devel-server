@@ -12,7 +12,14 @@ function resize(){
 function ajaxSimple(params){
     var ajax = new XMLHttpRequest();
     ajax.open('get',params.url);
-    ajax.onload=params.onload;
+    ajax.onload=function(e){
+        try{
+            params.onload.call(this,e);
+        }catch(err){
+            params.onerror(err);
+        }
+    }
+    ajax.onerror=params.onerror;
     ajax.send();
 }
 
@@ -35,9 +42,7 @@ function loadFrames(){
                 onload:function(e){
                     var info=JSON.parse(this.responseText);
                     frame.codenautas_info.originFileName=info.originFileName;
-                    if(frame.codenautas_info.mtime=='ignored'){
-                        frame.codenautas_info.mtime=info.mtime;
-                    }else if(frame.codenautas_info.mtime<info.mtime){
+                    if(frame.codenautas_info.mtime!='ignored' && frame.codenautas_info.mtime<info.mtime){
                         frame.controlTagLateral.textContent='R';
                         frame.controlTagLateral.title='Refreshing';
                         frame.src='/file'+frame.dataset.path+parametrosQuery();
@@ -66,10 +71,16 @@ function loadFrames(){
                             frame.controlTagLateral.textContent='L';
                             frame.controlTagLateral.title=frame.src;
                             setTimeout(resize,100);
+                            // setTimeout(loadFrames,1000);
                         }
                         frame.codenautas_info.mtime=info.mtime;
                     }else{
-                        frame.controlTagLateral.textContent='I';
+                        if(frame.codenautas_info.mtime=='ignored'){
+                            frame.codenautas_info.mtime=info.mtime;
+                        }else{
+                            frame.controlTagLateral.textContent='I';
+                        }
+                        // setTimeout(loadFrames,1000);
                     }
                     for(var name in frame.codenautas_info){
                         var element=document.getElementById(name);
@@ -78,6 +89,9 @@ function loadFrames(){
                         }
                     }
                     opcion_originFileName.style.display=(frame.codenautas_info.originFileName?"":"none");
+                },
+                onerror:function(err){
+                    // setTimeout(loadFrames,1000);
                 }
             });
         }
@@ -95,5 +109,6 @@ window.addEventListener('load',function(){
     actualFrames.push(visibleFrame);
     window.addEventListener('resize', resize);
     setTimeout(resize,100);
+    // setTimeout(loadFrames,1000);
     setInterval(loadFrames,1000);
 });

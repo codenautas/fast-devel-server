@@ -105,10 +105,11 @@ app.use('/info',function(req,res,next){
         originFileName:null
     };
     var fileName='../'+req.path;
+    var fileNameForStat=fileName;
     if(req.query["from-original"]){
-        fileName=path.dirname(fileName)+'/'+req.query["from-original"];
+        fileNameForStat=path.dirname(fileName)+'/'+req.query["from-original"];
     }
-    fsPromise.stat(fileName).then(function(stat){
+    fsPromise.stat(fileNameForStat).then(function(stat){
         info.mtime=stat.mtime;
         if(path.extname(req.path)=='.md'){
             return fsPromise.readFile(fileName, {encoding: 'utf8'}).then(function(content){
