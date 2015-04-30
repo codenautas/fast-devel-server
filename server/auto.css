@@ -1,11 +1,14 @@
 .lateralDiv{
     float:left; 
-    border-right:2px solid green; 
-    width:20px
+    width:20px;
 }
 
 .mainIframe{
     float:left;
+}
+
+header{
+    height:25px;
 }
 
 #esquina{
@@ -18,4 +21,16 @@
 #upperDiv{
     margin-left:6px;
     /*  display:inline-block; */
+    margin-bottom:3px;
+}
+
+.info{
+    margin:2px;
+    margin-left:2px;
+    background-color:#DDD;
+    border-left:  1px solid #EEE;
+    border-top:   1px solid #EEE;
+    border-right: 1px solid #CCC;
+    border-bottom:1px solid #CCC;
+    padding:2px;
 }

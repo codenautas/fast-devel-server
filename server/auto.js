@@ -27,16 +27,20 @@ function loadFrames(){
             };
         }
         if(frame.codenautas_info.autorefresh){
+            var parametrosQuery=function(){
+                return frame.codenautas_info.originFileName && convertir.checked?"?from-original="+encodeURIComponent(frame.codenautas_info.originFileName):"";
+            }
             ajaxSimple({
-                url:'/info'+frame.dataset.path,
+                url:'/info'+frame.dataset.path+parametrosQuery(),
                 onload:function(e){
                     var info=JSON.parse(this.responseText);
+                    frame.codenautas_info.originFileName=info.originFileName;
                     if(frame.codenautas_info.mtime=='ignored'){
                         frame.codenautas_info.mtime=info.mtime;
                     }else if(frame.codenautas_info.mtime<info.mtime){
                         frame.controlTagLateral.textContent='R';
                         frame.controlTagLateral.title='Refreshing';
-                        frame.src='/file'+frame.dataset.path;
+                        frame.src='/file'+frame.dataset.path+parametrosQuery();
                         frame.onload=function(){
                             var insideFrame=false;
                             try{
@@ -61,11 +65,19 @@ function loadFrames(){
                             }
                             frame.controlTagLateral.textContent='L';
                             frame.controlTagLateral.title=frame.src;
+                            setTimeout(resize,100);
                         }
-                        frame.codenautas_info.mtime=fstat.mtime;
+                        frame.codenautas_info.mtime=info.mtime;
                     }else{
                         frame.controlTagLateral.textContent='I';
                     }
+                    for(var name in frame.codenautas_info){
+                        var element=document.getElementById(name);
+                        if(element){
+                            element.textContent=frame.codenautas_info[name];
+                        }
+                    }
+                    opcion_originFileName.style.display=(frame.codenautas_info.originFileName?"":"none");
                 }
             });
         }

@@ -7,6 +7,7 @@ var Promise = require('promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
 var multilang = require('multilang');
+var path = require('path');
 
 if(false){
     var MarkdownIt = require('markdown-it');
@@ -84,12 +85,29 @@ fsPromise.readFile('./server/auto.jade',{encoding: 'utf8'}).then(function(jadeCo
     process.exit(1);
 });
 
+function middlewareDeLogueo(donde){
+    return function(req,res,next){
+        console.log('llamaron a',donde,req.path);
+        console.log('parametros',req.query);
+        next();
+    }
+}
+
+app.use('/file',middlewareDeLogueo('file'));
+app.use('/info',middlewareDeLogueo('info'));
+
 var validExts=_.keys(mime.types);
 
 app.use('/info',function(req,res,next){
     //filter path
-    var info={};
+    var info={
+        mtime:null, 
+        originFileName:null
+    };
     var fileName='../'+req.path;
+    if(req.query["from-original"]){
+        fileName=path.dirname(fileName)+'/'+req.query["from-original"];
+    }
     fsPromise.stat(fileName).then(function(stat){
         info.mtime=stat.mtime;
         if(path.extname(req.path)=='.md'){
@@ -105,6 +123,7 @@ app.use('/info',function(req,res,next){
         for(var attr in moreInfo){
             info[attr]=moreInfo[attr];
         }
+        console.log('devuelvo info',info);
         res.end(JSON.stringify(info));
     }).catch(function(err){
         console.log('ERROR /info stat');

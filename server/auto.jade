@@ -6,9 +6,14 @@ html(lang="es")
   body
     header
       span#esquina &equiv;
-      span#upperDiv ac&aacute; va la info que se ve arriba
+      span#upperDiv 
+        span#mtime.info
+        span#originFileName.info
+        span#opcion_originFileName(style="display:none")
+          input#convertir(type='checkbox' checked=false)
+          label(for="convertir") convertido
     .lateralDiv
-      .info(title="loading", data-path=path, id="lateral1") L
+      div(title="loading", data-path=path, id="lateral1") L
     iframe.mainIframe(data-path=path, id="frame1")
     script(src="/auto.js")
       
