@@ -6,7 +6,7 @@ var actualFrames=[];
 
 function resize(){
     visibleFrame.style.width=innerWidth-visibleFrame.controlTagLateral.offsetWidth-40+'px';
-    visibleFrame.style.height=innerHeight-30+'px';
+    visibleFrame.style.height=innerHeight-50+'px';
 }
 
 function ajaxSimple(params){
@@ -20,20 +20,20 @@ function loadFrames(){
     var pattern=/^((https?:\/\/)?[-a-z.0-9]+(:\d+)?)\/file(\/|$)/;
     actualFrames.forEach(function(frame){
         frame.controlTagLateral.textContent='T';
-        if(!frame.codenautas_fstat){
-            frame.codenautas_fstat={
+        if(!frame.codenautas_info){
+            frame.codenautas_info={
                 mtime:"",
                 autorefresh:!(/^((https?:\/\/)?[-a-z.0-9]+(:\d+)?)\/auto\/\!/.test(document.URL))
             };
         }
-        if(frame.codenautas_fstat.autorefresh){
+        if(frame.codenautas_info.autorefresh){
             ajaxSimple({
                 url:'/info'+frame.dataset.path,
                 onload:function(e){
-                    var fstat=JSON.parse(this.responseText);
-                    if(frame.codenautas_fstat.mtime=='ignored'){
-                        frame.codenautas_fstat.mtime=fstat.mtime;
-                    }else if(frame.codenautas_fstat.mtime<fstat.mtime){
+                    var info=JSON.parse(this.responseText);
+                    if(frame.codenautas_info.mtime=='ignored'){
+                        frame.codenautas_info.mtime=info.mtime;
+                    }else if(frame.codenautas_info.mtime<info.mtime){
                         frame.controlTagLateral.textContent='R';
                         frame.controlTagLateral.title='Refreshing';
                         frame.src='/file'+frame.dataset.path;
@@ -55,14 +55,14 @@ function loadFrames(){
                             }
                             if(loadedPath != frame.dataset.path){
                                 frame.dataset.path = loadedPath;
-                                frame.codenautas_fstat.mtime='ignored';
-                                frame.codenautas_fstat.autorefresh=autorefresh;
+                                frame.codenautas_info.mtime='ignored';
+                                frame.codenautas_info.autorefresh=autorefresh;
                                 window.history.replaceState(null, document.title, newUrl);
                             }
                             frame.controlTagLateral.textContent='L';
                             frame.controlTagLateral.title=frame.src;
                         }
-                        frame.codenautas_fstat.mtime=fstat.mtime;
+                        frame.codenautas_info.mtime=fstat.mtime;
                     }else{
                         frame.controlTagLateral.textContent='I';
                     }
@@ -82,6 +82,6 @@ window.addEventListener('load',function(){
     visibleFrame.controlTagLateral=lateral1;
     actualFrames.push(visibleFrame);
     window.addEventListener('resize', resize);
-    resize();
+    setTimeout(resize,100);
     setInterval(loadFrames,1000);
 });

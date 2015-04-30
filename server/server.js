@@ -94,8 +94,9 @@ app.use('/info',function(req,res,next){
         info.mtime=stat.mtime;
         if(path.extname(req.path)=='.md'){
             return fsPromise.readFile(fileName, {encoding: 'utf8'}).then(function(content){
-                var originFileName=content.split('\n')[0].replace(/^.*<!-- multilang from\s*(\S*)\s*$/,'$1');
-                return {originFileName: originFileName};
+                var matches=content.split('\n')[0].match(/^.*<!-- multilang from\s*(\S*)\s*$/);
+                if(!matches) return {};
+                return {originFileName: matches[1]};
             });
         };
         return {};
