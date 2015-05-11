@@ -3,8 +3,8 @@
     "/example-dir",
     true,
     true,
-    "c:\\hecho\\npm\\fast-devel-server\\examples\\example-dir",
+    "#ROOT#|examples|example-dir",
     "details",
-    "c:\\hecho\\npm\\fast-devel-server\\node_modules\\serve-index\\public\\directory.html",
-    "c:\\hecho\\npm\\fast-devel-server\\node_modules\\serve-index\\public\\style.css"
+    "#ROOT#|node_modules|serve-index|public|directory.html",
+    "#ROOT#|node_modules|serve-index|public|style.css"
 ]

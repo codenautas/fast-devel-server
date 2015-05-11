@@ -7,6 +7,7 @@ var request = require('supertest');
 var serveIndex = require('serve-index');
 var Promise = require('promise');
 var expect = require('expect.js');
+var path = require('path');
 var FDS = require('..');
  
 describe('dependencies', function(){
@@ -97,6 +98,12 @@ describe('dependencies', function(){
                 return fsPromise.readFile('test/html-input.json',{encoding: 'utf8'});
             }).then(function(jsonedInputParameters){
                 expectedInputParameters=JSON.parse(jsonedInputParameters);
+                expectedInputParameters=expectedInputParameters.map(function(elemento){
+                    if(typeof elemento=='string'){
+                        return elemento.replace(/\|/g,path.sep).replace("#ROOT#",process.cwd());
+                    }
+                    return elemento;
+                });
                 return fsPromise.readFile('test/header-output.json',{encoding: 'utf8'});
             }).then(function(jsonedHeaderOutput){
                 expectedHeaderOutput=JSON.parse(jsonedHeaderOutput);
