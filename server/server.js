@@ -87,8 +87,6 @@ fsPromise.readFile('./server/auto.jade',{encoding: 'utf8'}).then(function(jadeCo
 
 function middlewareDeLogueo(donde){
     return function(req,res,next){
-        console.log('llamaron a',donde,req.path);
-        console.log('parametros',req.query);
         next();
     }
 }
@@ -124,7 +122,6 @@ app.use('/info',function(req,res,next){
         for(var attr in moreInfo){
             info[attr]=moreInfo[attr];
         }
-        console.log('devuelvo info',info);
         res.end(JSON.stringify(info));
     }).catch(function(err){
         console.log('ERROR /info stat');
@@ -164,6 +161,7 @@ var serveConvert=function serveConvert(root, opts){
             }).then(function(buf){
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
                 res.setHeader('Content-Length', buf.length);
+                console.log('buf.lenght', buf.lenght);
                 res.end(buf);
             });
         }
@@ -194,5 +192,5 @@ app.use('/file',extensionServeStatic('..', {
 app.use(extensionServeStatic('./server', {
     index: ['index.html'], 
     extensions:[''], 
-    staticExtensions:['js','css','html']
+    staticExtensions:['js','css','html','png']
 }))

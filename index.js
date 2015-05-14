@@ -17,7 +17,9 @@ module.exports = {
         serveIndex.html = function html(req, res, files, next, dir, showUp, icons, path, view, template, stylesheet){
             var middleRes = {
                 setHeader:function setHeader(name, value){
-                    res.setHeader(name, value);
+                    if(name!='Content-Length'){
+                        res.setHeader(name, value);
+                    }
                 },
                 end:function end(content){
                     var text=content.toString();
@@ -35,6 +37,7 @@ module.exports = {
                             }
                         )
                     });
+                    res.setHeader('Content-Length', text.length);
                     res.end(text);
                 }
             };
