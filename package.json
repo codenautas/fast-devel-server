@@ -14,21 +14,24 @@
     "extension-serve-static": "^0.1.6",
     "promise": "~7.0.1",
     "fs-promise": "~0.3.1", 
-    "brucedown": "^1.1.1",
     "jade": "^1.9.2",
-    "serve-index": "^1.6.3",
+    "serve-index": "^1.6.4",
     "multilang": "^0.1.0",
-    "moment": "^2.10.2"
+    "moment": "^2.10.3",
+    "marked": "^0.3.3",
+    "highlight.js": "^8.5.0",
+    "pygmentize-bundled": "^2.3.0"
   },
   "x": {
+    "brucedown": "^1.1.1",
     "markdown": "^0.5.0",
     "markdown-it": "^4.2.0"
   },
   "devDependencies": {
-    "istanbul": "~0.3.13",
-    "mocha": "~2.2.4",
+    "istanbul": "~0.3.14",
+    "mocha": "~2.2.5",
     "after": "~0.8.1",
-    "supertest": "~0.15.0",
+    "supertest": "~1.0.1",
     "expect.js": "^0.3.1"
   },
   "engines": {

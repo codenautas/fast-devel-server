@@ -24,7 +24,7 @@ if(false){
             return markdown.toHTML(content,'Maruku');
         });
     }
-}else if(true){
+}else if(false){
     var brucedown  = require( "brucedown" );
     var markdownRender=function markdownRender(content){
         return new Promise(function(resolve, reject){
@@ -33,6 +33,44 @@ if(false){
                     reject(err);
                 }else{
                     resolve(ok);
+                }
+            });
+        });
+    }
+}else if(true){
+    var marked = require("marked");
+    marked.setOptions({
+        renderer: new marked.Renderer(),
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false,
+        highlightx: function (code, lang, callback) {
+            require('pygmentize-bundled')({ lang: lang, format: 'html' }, code, function (err, result) {
+                callback(err, result.toString());
+            });
+        },
+        highlight: function(code){
+            return require('highlight.js').highlightAuto(code).value;
+        }
+    });
+    var markdownRender=function markdownRender(content){
+        return new Promise(function(resolve, reject){
+            marked(content,function(err,ok){
+                if(err){
+                    reject(err);
+                }else{
+                    var html='<!doctype html>\n<html><head>'+
+                        '<link href="/markdown.css" media="all" rel="stylesheet" />'+
+                        '<link href="/markdown2.css" media="all" rel="stylesheet" />'+
+                        '<link href="/github.css" media="all" rel="stylesheet" />'+
+                        '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">'+
+                        ok+
+                        '</article></body></html>';
+                    resolve(html);
                 }
             });
         });
@@ -161,7 +199,6 @@ var serveConvert=function serveConvert(root, opts){
             }).then(function(buf){
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
                 res.setHeader('Content-Length', buf.length);
-                console.log('buf.lenght', buf.lenght);
                 res.end(buf);
             });
         }

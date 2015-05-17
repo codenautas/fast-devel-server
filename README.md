@@ -54,7 +54,7 @@ Y luego usa en tu navegador para renderizar o ver y autorefrescar tus datos
 
 [!--lang:*-->
 
-![in your navigator put http://localhost:54321/auto/your-package/examples/example.txt](https://github.com/codenautas/fast-devel-server/blob/master/examples/example.png)
+![in your navigator put http://localhost:54321/auto/your-package/examples/example.txt](https://raw.githubusercontent.com/codenautas/fast-devel-server/master/examples/example.png)
 
 <!--lang: en-->
 
