@@ -37,6 +37,7 @@ module.exports = {
                             }
                         )
                     });
+                    text = text.replace(/  direction: rtl;/,'');
                     res.setHeader('Content-Length', text.length);
                     res.end(text);
                 }
