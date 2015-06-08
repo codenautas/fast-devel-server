@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var express = require('express');
 var app = express();
-var Promise = require('promise');
+var Promise = require('best-promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
 var multilang = require('multilang');
@@ -238,7 +238,7 @@ app.use(extensionServeStatic('./server', {
 
 app.use('/dir-info',function(req,res){
     Promise.resolve().then(function(){
-        return dirInfo.getInfo({path:'..'+req.path, net:true, cmd:true});
+        return dirInfo.getInfo(path.normalize('..'+req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
     }).catch(function(err){
