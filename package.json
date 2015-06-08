@@ -11,8 +11,6 @@
   "dependencies": { 
     "lodash": "^3.9.3",
     "express": "^4.12.4",
-    "extension-serve-static": "^0.1.6",
-    "promise": "~7.0.1",
     "fs-promise": "~0.3.1", 
     "jade": "^1.10.0",
     "serve-index": "^1.6.4",
@@ -20,7 +18,12 @@
     "moment": "^2.10.3",
     "marked": "^0.3.3",
     "highlight.js": "^8.6.0",
-    "pygmentize-bundled": "^2.3.0"
+    "pygmentize-bundled": "^2.3.0",
+    
+    "best-promise": ">=0.1.2",
+    "extension-serve-static": "^0.1.6",
+    "auto-deploy": ">=0.0.2",
+    "dir-info": ">=0.0.3"
   },
   "x": {
     "brucedown": "^1.1.1",

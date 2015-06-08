@@ -27,17 +27,21 @@ module.exports = {
                         var pattern = 
                         text = text.replace(
                             new RegExp(
-                                '(<li><.*title="'+
+                                '(<li><a href="/file/)([^"]+)'+
+                                '(".*title="'+
                                 _.escapeRegExp(file)+
-                                '".*class="date">)([-a-zA-Z:./0-9 ]+)(</span></a></li>)'
+                                '".*class="date">)([-a-zA-Z:./0-9 ]+)(</span>)(</a></li>)'
                             ),
-                            function(match,prefix,date,sufix){
+                            function(match,firstLi,url,prefix,date,sufix,lastLi){
                                 var dateObject=moment(new Date(date));
-                                return prefix+dateObject.format('DD/MM/YYYY HH:mm:ss')+sufix;
+                                return firstLi+url+prefix+dateObject.format('DD/MM/YYYY HH:mm:ss')+sufix+
+                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+url+'">?</span></a></li>';
                             }
                         )
                     });
                     text = text.replace(/  direction: rtl;/,'');
+                    text = text.replace(/  width: 30%;/g,'  width: 25%;');
+                    text = text.replace(/<\/body>/,'<script src="/auto-dir-info.js"></script></body>');
                     res.setHeader('Content-Length', text.length);
                     res.end(text);
                 }

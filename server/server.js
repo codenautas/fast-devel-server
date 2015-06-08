@@ -8,6 +8,10 @@ var fsPromise = require('fs-promise');
 var jade = require('jade');
 var multilang = require('multilang');
 var path = require('path');
+var autoDeploy = require('auto-deploy');
+var dirInfo = require('dir-info');
+
+app.use(autoDeploy({log:true, scriptName:'start', pid:12345}));
 
 if(false){
     var MarkdownIt = require('markdown-it');
@@ -231,3 +235,15 @@ app.use(extensionServeStatic('./server', {
     extensions:[''], 
     staticExtensions:['js','css','html','png']
 }))
+
+app.use('/dir-info',function(req,res){
+    Promise.resolve().then(function(){
+        return dirInfo.getInfo({path:'..'+req.path, net:true, cmd:true});
+    }).then(function(info){
+        res.end(JSON.stringify(info));
+    }).catch(function(err){
+        console.log('ERROR',err);
+        console.log('stack',err.stack);
+        res.end('<H1>ERROR</H1><PRE>'+err);
+    });
+});
