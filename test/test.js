@@ -2,10 +2,10 @@
 
 var _ = require('lodash');
 var http = require('http');
+var Promise = require('best-promise');
 var fsPromise = require('fs-promise');
 var request = require('supertest');
 var serveIndex = require('serve-index');
-var Promise = require('promise');
 var expect = require('expect.js');
 var path = require('path');
 var FDS = require('..');
