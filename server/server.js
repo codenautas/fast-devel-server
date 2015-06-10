@@ -10,8 +10,10 @@ var multilang = require('multilang');
 var path = require('path');
 var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
+var kill9 = require('kill-9');
 
 app.use(autoDeploy({log:true, scriptName:'start', pid:12345}));
+app.use(kill9({pid:12345}));
 
 if(false){
     var MarkdownIt = require('markdown-it');
@@ -238,7 +240,7 @@ app.use(extensionServeStatic('./server', {
 
 app.use('/dir-info',function(req,res){
     Promise.resolve().then(function(){
-        return dirInfo.getInfo({path:'..'+req.path, net:true, cmd:true});
+        return dirInfo.getInfo(path.normalize('..'+req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
     }).catch(function(err){
