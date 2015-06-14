@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var express = require('express');
 var app = express();
-var Promise = require('best-promise');
+var Promises = require('best-promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
 var multilang = require('multilang');
@@ -19,30 +19,20 @@ if(false){
     var MarkdownIt = require('markdown-it');
     var markdown = new MarkdownIt();
     var markdownRender=function markdownRender(content){
-        return Promise.resolve().then(function(){
+        return Promises.start(function(){
             return markdown.render(content);
         });
     }
 }else if(false){
     var markdown = require( "markdown" ).markdown;
     var markdownRender=function markdownRender(content){
-        return Promise.resolve().then(function(){
+        return Promises.start(function(){
             return markdown.toHTML(content,'Maruku');
         });
     }
 }else if(false){
     var brucedown  = require( "brucedown" );
-    var markdownRender=function markdownRender(content){
-        return new Promise(function(resolve, reject){
-            brucedown(content,function(err,ok){
-                if(err){
-                    reject(err);
-                }else{
-                    resolve(ok);
-                }
-            });
-        });
-    }
+    var markdownRender=Promises.wrapErrRes(brucedown);
 }else if(true){
     var marked = require("marked");
     marked.setOptions({
@@ -64,7 +54,7 @@ if(false){
         }
     });
     var markdownRender=function markdownRender(content){
-        return new Promise(function(resolve, reject){
+        return Promises.make(function(resolve, reject){
             marked(content,function(err,ok){
                 if(err){
                     reject(err);
@@ -103,7 +93,7 @@ app.get('/',function(req,res){
 var externalInfoTemplate=null;
 
 app.use('/auto/!EXTERNAL',function(req,res){
-    Promise.resolve(!!externalInfoTemplate).then(function(catched){
+    Promises.Promise.resolve(!!externalInfoTemplate).then(function(catched){
         return catched||fsPromise.readFile('./server/external.jade',{encoding: 'utf8'}).then(function(jadeContent){
             externalInfoTemplate=jade.compile(jadeContent);
         });
@@ -191,12 +181,12 @@ app.use('/file',serveIndex('..', {
 var serveConvert=function serveConvert(root, opts){
     return function(req,res,next){
         var ext=path.extname(req.path).substring(1);
-        var convert=serveConvert.converters[ext];
+        var convert=serveConvert.fileConverters[path.basename(req.path)]||serveConvert.converters[ext];
         if(!convert){
             next();
         }else{
             var fileName=root+'/'+req.path;
-            Promise.resolve().then(function(){
+            Promises.start(function(){
                 return fsPromise.readFile(fileName, {encoding: 'utf8'});
             }).then(
                 convert
@@ -211,17 +201,42 @@ var serveConvert=function serveConvert(root, opts){
     };
 }
 
+function sourceRenderer(type){
+    return function(content){
+        return markdownRender('```'+type+'\n'+content+'\n```');
+    }
+}
+
 serveConvert.converters={
+    '':sourceRenderer(''),
+    bat:sourceRenderer('dos'),
+    css:sourceRenderer('css'),
+    diff:sourceRenderer('diff'),
+    gitignore:sourceRenderer(''),
+    ini:sourceRenderer('ini'),
     jade:function(content){
-        return Promise.resolve().then(function(){
+        return Promises.start(function(){
             return jade.render(content,{});
         });
     },
+    js:sourceRenderer('js'),
+    json:sourceRenderer('json'),
+    less:sourceRenderer('less'),
+    makefile:sourceRenderer('makefile'),
     markdown:markdownRender,
     md:markdownRender,
-    js:function(content){
-        return markdownRender('```js\n'+content+'\n```');
-    }
+    php:sourceRenderer('php'),
+    psql:sourceRenderer('sql'),
+    sh:sourceRenderer('bash'),
+    sql:sourceRenderer('sql'),
+    xml:sourceRenderer('xml'),
+    yaml:sourceRenderer('json'),
+    yml:sourceRenderer('json'),
+}
+
+serveConvert.fileConverters={
+    '.htaccess': sourceRenderer('apache'),
+    'httpd.conf': sourceRenderer('apache'),
 }
 
 app.use('/file',serveConvert('..', {}));
@@ -239,7 +254,7 @@ app.use(extensionServeStatic('./server', {
 }))
 
 app.use('/dir-info',function(req,res){
-    Promise.resolve().then(function(){
+    Promises.start(function(){
         return dirInfo.getInfo(path.normalize('..'+req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
