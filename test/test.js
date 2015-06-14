@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var http = require('http');
-var Promise = require('best-promise');
+var Promises = require('best-promise');
 var fsPromise = require('fs-promise');
 var request = require('supertest');
 var serveIndex = require('serve-index');
@@ -18,7 +18,7 @@ describe('dependencies', function(){
         var datePattern='\\w\\w\\w \\w\\w\\w \\d?\\d \\d\\d\\d\\d \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
         var dateRegExp=new RegExp(datePattern,'g');
         it('control complete output', function(done){
-            Promise.resolve().then(function(){
+            Promises.start(function(){
                 return fsPromise.readFile('test/complete-output.html',{encoding: 'utf8'});
             }).then(function(completeContent){
                 var pattern=_.escapeRegExp(completeContent).replace(dateRegExp,datePattern);
@@ -37,7 +37,7 @@ describe('dependencies', function(){
         var used_only_once__not_need_now_exept_if_the_original_module_changes=function(){}('record input and output data from "html" function', function(done){
             var oldHtml=serveIndex.html;
             serveIndex.html=function htmlMock(req, res, files, next, dir, showUp, icons, path, view, template, stylesheet){
-                Promise.resolve().then(function(){
+                Promises.start(function(){
                     return fsPromise.writeFile('test/outs/html-input.json',JSON.stringify([files, dir, showUp, icons, path, view, template, stylesheet]));
                 }).then(function(){
                     var resMock={
@@ -45,7 +45,7 @@ describe('dependencies', function(){
                             res.setHeader(name, value);
                         },
                         end:function end(content){
-                            Promise.resolve().then(function(){
+                            Promises.start(function(){
                                 return fsPromise.writeFile('test/outs/html-output.txt',content);
                             }).then(function(){
                                 res.end(content);
@@ -97,7 +97,7 @@ describe('dependencies', function(){
                 }
                 oldHtml(req, resMock, files, next, dir, showUp, icons, path, view, template, stylesheet);
             };
-            Promise.resolve().then(function(){
+            Promises.start(function(){
                 return fsPromise.readFile('test/complete-output.html',{encoding: 'utf8'});
             }).then(function(completeContent){
                 var pattern=_.escapeRegExp(completeContent).replace(dateRegExp,datePattern);
