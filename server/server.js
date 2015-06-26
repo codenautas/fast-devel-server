@@ -12,9 +12,7 @@ var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var kill9 = require('kill-9');
 
-app.use(autoDeploy({log:true, scriptName:'start', pid:12345}));
-app.use(kill9({pid:12345}));
-
+autoDeploy.install(app);
 if(false){
     var MarkdownIt = require('markdown-it');
     var markdown = new MarkdownIt();
