@@ -44,6 +44,14 @@ dirInfo.possibleResponses = {
     modifieds:{
         type:'list-of-files',
         icon:'/modifieds.png'
+    },
+    deletes:{
+        type:'list-of-files',
+        icon:'/deletes.png'
+    },
+    untrackeds:{
+        type:'list-of-files',
+        icon:'/untrackeds.png'
     }
 };
 
