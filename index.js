@@ -41,6 +41,7 @@ module.exports = {
                     });
                     text = text.replace(/  direction: rtl;/,'');
                     text = text.replace(/  width: 30%;/g,'  width: 22%;');
+                    text = text.replace(/  width: 60%;/g,'  width: 40%;');
                     text = text.replace(/<\/body>/,'<script src="/auto-dir-info.js"></script></body>');
                     res.setHeader('Content-Length', text.length);
                     res.end(text);
