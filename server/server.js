@@ -12,9 +12,7 @@ var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var kill9 = require('kill-9');
 
-//console.log("SERVER process", process)
-//app.use(autoDeploy({log:true, scriptName:'start', pid:12345}));
-autoDeploy.install(app);
+app.use(autoDeploy({log:true, scriptName:'start', pid:12345}));
 app.use(kill9({pid:12345}));
 
 if(false){
@@ -254,39 +252,6 @@ app.use(extensionServeStatic('./server', {
     extensions:[''], 
     staticExtensions:['js','css','html','png']
 }))
-
-dirInfo.possibleResponses = {
-    is:{
-        values:{
-            github:'h',
-            git:'g',
-            svn:'s',
-            multilang:'m',
-            "package.json":'p',
-            json:'j',
-            other:''
-        }
-    },
-    status:{
-        values:{
-            error:'E', // for json & package.json
-            deletes:'D',
-            changed:'C',
-            unstaged:'U',
-            ignored:'i',
-            outdated:'O', // only for multilang
-            ok:''
-        }
-    },
-    server:{
-        values:{
-            unpushed:'P',
-            unsynced:'S',
-            outdated:'O',
-            ok:''
-        }
-    }
-};
 
 app.use('/dir-info',function(req,res){
     Promises.start(function(){

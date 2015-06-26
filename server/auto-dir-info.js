@@ -1,5 +1,52 @@
 ﻿"use strict";
 
+var dirInfo={};
+
+dirInfo.possibleResponses = {
+    is:{
+        values:{
+            github:'h',
+            git:'g',
+            svn:'s',
+            multilang:'m',
+            "package.json":'p',
+            json:'j',
+            other:''
+        }
+    },
+    status:{
+        values:{
+            error:'E', // for json & package.json
+            deletes:'D',
+            changed:'C',
+            unstaged:'U',
+            ignored:'i',
+            outdated:'O', // only for multilang
+            ok:''
+        }
+    },
+    server:{
+        values:{
+            unpushed:'P',
+            unsynced:'S',
+            outdated:'O',
+            ok:''
+        }
+    },
+    isGit:{
+        type:'boolean',
+        icon:'https://git-scm.com/favicon.ico'
+    },
+    isGithub:{
+        type:'boolean',
+        icon:'https://github.com/fluidicon.png'
+    },
+    modifieds:{
+        type:'list-of-files',
+        icon:'/modifieds.png'
+    }
+};
+
 function ajaxSimple(params){
     var ajax = new XMLHttpRequest();
     params.onerror=params.onerror||function(err){ alert(err); };
@@ -34,7 +81,19 @@ window.addEventListener('load',function(){
                 data:{},
                 onload:function(text){
                     span.title=text;
-                    span.textContent=text;
+                    var info=JSON.parse(text);
+                    for(var property in info){
+                        var value=info[property];
+                        var theIconUrl=(dirInfo.possibleResponses[property]||{}).icon;
+                        if(theIconUrl){
+                            var img=document.createElement('img');
+                            img.src=theIconUrl;
+                            img.title=value;
+                            img.alt=property;
+                            img.style.height='18px';
+                            span.appendChild(img);
+                        }
+                    }
                 },
                 onerror:function(text){
                     span.title=text;
