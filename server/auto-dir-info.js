@@ -89,6 +89,7 @@ window.addEventListener('load',function(){
                 data:{},
                 onload:function(text){
                     span.title=text;
+                    span.textContent='';
                     var info=JSON.parse(text);
                     for(var property in info){
                         var value=info[property];
@@ -99,6 +100,7 @@ window.addEventListener('load',function(){
                             img.title=value;
                             img.alt=property;
                             img.style.height='18px';
+                            img.style.rightMargin='3px';
                             span.appendChild(img);
                         }
                     }

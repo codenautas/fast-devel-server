@@ -27,15 +27,15 @@ module.exports = {
                         var pattern = 
                         text = text.replace(
                             new RegExp(
-                                '(<li><a href="/file/)([^"]+)'+
+                                '(<li><a href="/file/?)([^"]*)'+
                                 '(".*title="'+
                                 _.escapeRegExp(file)+
-                                '".*class="date">)([-a-zA-Z:,./0-9 ]+)(</span>)(</a></li>)'
+                                '".*class="date">)([-a-zA-Z:,./0-9 ]*)(</span>)(</a></li>)'
                             ),
                             function(match,firstLi,url,prefix,date,sufix,lastLi){
-                                var dateObject=moment(new Date(date));
-                                return firstLi+url+prefix+dateObject.format('DD/MM/YYYY HH:mm:ss')+sufix+
-                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+url+'">?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;???????????????????????????????????????????????????????</span></a></li>';
+                                var dateFormated=date?moment(new Date(date)).format('DD/MM/YYYY HH:mm:ss'):'';
+                                return firstLi+url+prefix+dateFormated+sufix+
+                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+(file=='..'?'.':url)+'">?</span></a></li>';
                             }
                         )
                     });

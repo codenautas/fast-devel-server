@@ -15,7 +15,7 @@ describe('dependencies', function(){
         var toLower=function toLower(x){
             return _.isString(x)?x.toLowerCase():x;
         }
-        var datePattern='(\\w\\w\\w\\w*,? \\w\\w\\w\\w*,? \\d?\\d,? \\d\\d\\d\\d|\\d{1:4}[-/. ]\\d{1:4}[-/. ]\\d{1:4}) \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
+        var datePattern='(\\w\\w\\w\\w*,? \\w\\w\\w\\w*,? \\d?\\d,? \\d\\d\\d\\d|\\d{1,4}[-/. ]\\d{1,4}[-/. ]\\d{1,4}) \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
         var dateRegExp=new RegExp(datePattern,'g');
         it('control complete output', function(done){
             Promises.start(function(){
