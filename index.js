@@ -35,12 +35,12 @@ module.exports = {
                             function(match,firstLi,url,prefix,date,sufix,lastLi){
                                 var dateObject=moment(new Date(date));
                                 return firstLi+url+prefix+dateObject.format('DD/MM/YYYY HH:mm:ss')+sufix+
-                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+url+'">?</span></a></li>';
+                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+url+'">?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;???????????????????????????????????????????????????????</span></a></li>';
                             }
                         )
                     });
                     text = text.replace(/  direction: rtl;/,'');
-                    text = text.replace(/  width: 30%;/g,'  width: 25%;');
+                    text = text.replace(/  width: 30%;/g,'  width: 22%;');
                     text = text.replace(/<\/body>/,'<script src="/auto-dir-info.js"></script></body>');
                     res.setHeader('Content-Length', text.length);
                     res.end(text);
