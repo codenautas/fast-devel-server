@@ -30,7 +30,7 @@ module.exports = {
                                 '(<li><a href="/file/)([^"]+)'+
                                 '(".*title="'+
                                 _.escapeRegExp(file)+
-                                '".*class="date">)([-a-zA-Z:./0-9 ]+)(</span>)(</a></li>)'
+                                '".*class="date">)([-a-zA-Z:,./0-9 ]+)(</span>)(</a></li>)'
                             ),
                             function(match,firstLi,url,prefix,date,sufix,lastLi){
                                 var dateObject=moment(new Date(date));

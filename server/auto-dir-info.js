@@ -33,8 +33,8 @@ window.addEventListener('load',function(){
                 url:span.dataset.path,
                 data:{},
                 onload:function(text){
-                    span.title=JSON.stringify(text);
-                    span.textContent='ok';
+                    span.title=text;
+                    span.textContent=text;
                 },
                 onerror:function(text){
                     span.title=text;

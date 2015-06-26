@@ -15,7 +15,7 @@ describe('dependencies', function(){
         var toLower=function toLower(x){
             return _.isString(x)?x.toLowerCase():x;
         }
-        var datePattern='\\w\\w\\w \\w\\w\\w \\d?\\d \\d\\d\\d\\d \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
+        var datePattern='\\w\\w\\w\\w*,? \\w\\w\\w\\w*,? \\d?\\d,? \\d\\d\\d\\d \\d?\\d:\\d?\\d:\\d?\\d ?\\w?\\w?';
         var dateRegExp=new RegExp(datePattern,'g');
         it('control complete output', function(done){
             Promises.start(function(){
@@ -29,7 +29,7 @@ describe('dependencies', function(){
                 });
                 request(server)
                     .get('/example-dir')
-                    .expect(200, new RegExp(pattern),done)
+                    .expect(200, new RegExp(pattern),done);
             }).catch(function(err){
                 done(err);
             });

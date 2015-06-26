@@ -253,6 +253,39 @@ app.use(extensionServeStatic('./server', {
     staticExtensions:['js','css','html','png']
 }))
 
+dirInfo.possibleResponses = {
+    is:{
+        values:{
+            github:'h',
+            git:'g',
+            svn:'s',
+            multilang:'m',
+            "package.json":'p',
+            json:'j',
+            other:''
+        }
+    },
+    status:{
+        values:{
+            error:'E', // for json & package.json
+            deletes:'D',
+            changed:'C',
+            unstaged:'U',
+            ignored:'i',
+            outdated:'O', // only for multilang
+            ok:''
+        }
+    },
+    server:{
+        values:{
+            unpushed:'P',
+            unsynced:'S',
+            outdated:'O',
+            ok:''
+        }
+    }
+};
+
 app.use('/dir-info',function(req,res){
     Promises.start(function(){
         return dirInfo.getInfo(path.normalize('..'+req.path), {net:true, cmd:true});
