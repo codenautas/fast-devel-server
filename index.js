@@ -35,7 +35,8 @@ module.exports = {
                             function(match,firstLi,url,prefix,date,sufix,lastLi){
                                 var dateFormated=date?moment(new Date(date)).format('DD/MM/YYYY HH:mm:ss'):'';
                                 return firstLi+url+prefix+dateFormated+sufix+
-                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+'" data-path="/dir-info/'+(file=='..'?'.':url)+'">?</span></a></li>';
+                                    '<span data-dirinfo=dirinfo id="dirinfo-'+file+
+                                    '" data-path="/dir-info/'+(file=='..'?dir.replace(/^\/file\//,''):url)+'">?</span></a></li>';
                             }
                         )
                     });
