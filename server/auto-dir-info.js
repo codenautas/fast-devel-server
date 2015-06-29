@@ -52,6 +52,22 @@ dirInfo.possibleResponses = {
     untrackeds:{
         type:'list-of-files',
         icon:'/untrackeds.png'
+    },
+    unsynced:{
+        type:'boolean',
+        icon:'/unsynced.png'
+    },
+    unPushed:{
+        type:'boolean',
+        icon:'/push.png'
+    },
+    isPackageJson:{
+        type:'boolean',
+        icon:'/isjson.png'
+    },
+    isOutdated:{
+        type:'boolean',
+        icon:'/outdated.png'
     }
 };
 
