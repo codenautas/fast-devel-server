@@ -1,2 +1,3 @@
 ./push.png https://commons.wikimedia.org/wiki/File:Push_pushpullsignscom.jpg 
 ./outdated https://upload.wikimedia.org/wikipedia/commons/9/98/Ambox_current_red.svg
+./isjson https://upload.wikimedia.org/wikipedia/commons/c/c9/JSON_vector_logo.svg
