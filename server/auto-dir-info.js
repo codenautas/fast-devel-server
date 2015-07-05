@@ -84,7 +84,7 @@ window.addEventListener('load',function(){
                         if(response && (!response.showIf || response.showIf(info))){
                             var img=document.createElement('img');
                             img.src=response.icon;
-                            img.title=value;
+                            img.title=value===true?property:property+':'+value;
                             img.alt=property;
                             img.style.height='18px';
                             img.style.rightMargin='3px';
