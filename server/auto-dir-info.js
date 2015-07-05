@@ -3,38 +3,9 @@
 var dirInfo={};
 
 dirInfo.possibleResponses = {
-    is:{
-        values:{
-            github:'h',
-            git:'g',
-            svn:'s',
-            multilang:'m',
-            "package.json":'p',
-            json:'j',
-            other:''
-        }
-    },
-    status:{
-        values:{
-            error:'E', // for json & package.json
-            deletes:'D',
-            changed:'C',
-            unstaged:'U',
-            ignored:'i',
-            outdated:'O', // only for multilang
-            ok:''
-        }
-    },
-    server:{
-        values:{
-            unpushed:'P',
-            unsynced:'S',
-            outdated:'O',
-            ok:''
-        }
-    },
     isGit:{
         type:'boolean',
+        showIf:function isNotGithub(info){ return !info.isGithub; },
         icon:'https://git-scm.com/favicon.ico'
     },
     isGithub:{
@@ -53,17 +24,17 @@ dirInfo.possibleResponses = {
         type:'list-of-files',
         icon:'/untrackeds.png'
     },
-    unsynced:{
+    syncPending:{
         type:'boolean',
         icon:'/unsynced.png'
     },
-    unPushed:{
+    pushPending:{
         type:'boolean',
         icon:'/push.png'
     },
     isPackageJson:{
         type:'boolean',
-        icon:'/isjson.png'
+        icon:'/packagejson.png'
     },
     isOutdated:{
         type:'boolean',
@@ -109,10 +80,10 @@ window.addEventListener('load',function(){
                     var info=JSON.parse(text);
                     for(var property in info){
                         var value=info[property];
-                        var theIconUrl=(dirInfo.possibleResponses[property]||{}).icon;
-                        if(theIconUrl){
+                        var response=dirInfo.possibleResponses[property];
+                        if(response && (!response.showIf || response.showIf(info))){
                             var img=document.createElement('img');
-                            img.src=theIconUrl;
+                            img.src=response.icon;
                             img.title=value;
                             img.alt=property;
                             img.style.height='18px';
