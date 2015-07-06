@@ -24,7 +24,7 @@
     "best-promise": ">=0.2.2",
     "extension-serve-static": "^0.1.6",
     "auto-deploy": ">=0.0.7",
-    "dir-info": ">=0.0.9",
+    "dir-info": ">=0.1.1",
     "kill-9": ">=0.2.3"
   },
   "x": {

@@ -65,6 +65,19 @@ function ajaxSimple(params){
     ajax.send(enviar);
 }
 
+function addDirEntryIcon(span,opts){
+    var img=document.createElement('img');
+    img.src=opts.icon;
+    img.title=opts.value;
+    img.alt=opts.property;
+    img.style.height='18px';
+    img.style.rightMargin='3px';
+    if(span.textContent==='...'){
+        span.textContent='';
+    }
+    span.appendChild(img);
+}
+
 window.addEventListener('load',function(){
     var spans=document.querySelectorAll("[data-dirinfo=dirinfo]");
     for(var iSpan=0; iSpan<spans.length; iSpan++){
@@ -75,20 +88,32 @@ window.addEventListener('load',function(){
                 url:span.dataset.path,
                 data:{},
                 onload:function(text){
+                    if(span.textContent==='...'){
+                        span.textContent='';
+                    }
                     span.title=text;
-                    span.textContent='';
                     var info=JSON.parse(text);
                     for(var property in info){
                         var value=info[property];
                         var response=dirInfo.possibleResponses[property];
                         if(response && (!response.showIf || response.showIf(info))){
-                            var img=document.createElement('img');
-                            img.src=response.icon;
-                            img.title=value===true?property:property+':'+value;
-                            img.alt=property;
-                            img.style.height='18px';
-                            img.style.rightMargin='3px';
-                            span.appendChild(img);
+                            addDirEntryIcon(span,{
+                                icon:response.icon,
+                                value:value===true?property:property+':'+value,
+                                property:property
+                            });
+                            if(response.type==='list-of-files'){
+                                value.forEach(function(fileName){
+                                    var element=document.getElementById('dirinfo-'+fileName);
+                                    if(element){
+                                        addDirEntryIcon(element,{
+                                            icon:response.icon,
+                                            value:property,
+                                            property:property
+                                        }); 
+                                    }
+                                });
+                            }
                         }
                     }
                 },
