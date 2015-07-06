@@ -12,7 +12,8 @@ var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var kill9 = require('kill-9');
 
-autoDeploy.install(app);
+app.use('/tools',autoDeploy.middleware({pid:1234}));
+
 if(false){
     var MarkdownIt = require('markdown-it');
     var markdown = new MarkdownIt();
