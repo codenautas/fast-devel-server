@@ -1,6 +1,8 @@
 # fast-devel-server
 Fast developer server for displaying markdown and others
 
+Working in resolving the unsecure dependencies!
+
 <!--multilang v0 en:README.md es:LEEME.md -->
 
 ![designing](https://img.shields.io/badge/stability-desgining-red.svg)
