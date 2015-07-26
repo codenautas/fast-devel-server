@@ -225,7 +225,7 @@ app.use('/file',serveIndex('..', {
                 html.th('size'),
                 html.th('date'),
                 html.th('plus'),
-            ])].concat(_.map(locals.fileList,function(fileInfo){
+            ])].concat(_.map(locals.fileList,function(fileInfo,index){
                 var href=locals.directory+'/'+fileInfo.name;
                 if(fileInfo.stat.isDirectory()){
                     var fileNameClass='dir-name';
@@ -246,11 +246,11 @@ app.use('/file',serveIndex('..', {
                     ),
                     html.td({'class':'size'},numeral(fileInfo.stat.size).format()),
                     html.td({'class':'date'},moment(fileInfo.stat.mtime).format('DD/MM/YYYY HH:mm:ss')),
-                    html.td({
+                    html.td(fileInfo.stat.isDirectory() && locals.fileList[0].name==='..' && index?{}:{
                         'data-dirinfo':'dirinfo',
                         id:"dirinfo-"+fileInfo.name,
-                        'data-path':locals.directory.replace(/^\/file\//,'/dir-info/')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
-                    },locals.directory.replace(/^\/file\//,'/dir-info/')+(fileInfo.name=='..'?'':'/'+fileInfo.name))
+                        'data-path':locals.directory.replace(/^\/file(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
+                    })
                 ]);
             })))
         ]);
