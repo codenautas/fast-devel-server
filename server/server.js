@@ -224,7 +224,8 @@ app.use('/file',serveIndex('..', {
                 html.th('ext'),
                 html.th('size'),
                 html.th('date'),
-                html.th('plus'),
+                html.th('info'),
+                html.th('actions'),
             ])].concat(_.map(locals.fileList,function(fileInfo,index){
                 var href=locals.directory+'/'+fileInfo.name;
                 if(fileInfo.stat.isDirectory()){
@@ -246,10 +247,19 @@ app.use('/file',serveIndex('..', {
                     ),
                     html.td({'class':'size'},numeral(fileInfo.stat.size).format()),
                     html.td({'class':'date'},moment(fileInfo.stat.mtime).format('DD/MM/YYYY HH:mm:ss')),
-                    html.td(fileInfo.stat.isDirectory() && locals.fileList[0].name==='..' && index?{}:{
+                    html.td({
+                        'class':'info',
                         'data-dirinfo':'dirinfo',
+                        'data-dirinfotype':fileInfo.stat.isDirectory() && locals.fileList[0].name==='..' && index?'sub':'',
                         id:"dirinfo-"+fileInfo.name,
+                        'data-name':fileInfo.name,
                         'data-path':locals.directory.replace(/^\/file(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
+                    }),
+                    html.td({
+                        'class':'actions',
+                        'data-execaction':'execaction',
+                        id:"execaction-"+fileInfo.name,
+                        'data-path':locals.directory.replace(/^\/file(?=\/|$)/,'/exec-action')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
                     })
                 ]);
             })))

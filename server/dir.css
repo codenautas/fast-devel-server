@@ -61,6 +61,14 @@
     width:160px;
 }
 
+.info{
+    min-width:80px;
+}
+
+.actions{
+    min-width:80px;
+}
+
 a{
     text-decoration:none;
     color: black

@@ -2,14 +2,19 @@
 
 var dirInfo={};
 
+function isNotSubdirInProject(info, element){
+    return element.dataset.dirinfotype!='sub'; 
+}
+
 dirInfo.possibleResponses = {
     isGit:{
         type:'boolean',
-        showIf:function isNotGithub(info){ return !info.isGithub; },
+        showIf:function isNotGithub(info, element){ return !info.isGithub && element.dataset.dirinfotype!='sub'; },
         icon:'https://git-scm.com/favicon.ico'
     },
     isGithub:{
         type:'boolean',
+        showIf:isNotSubdirInProject,
         icon:'https://github.com/fluidicon.png'
     },
     modifieds:{
@@ -26,10 +31,12 @@ dirInfo.possibleResponses = {
     },
     syncPending:{
         type:'boolean',
+        showIf:isNotSubdirInProject,
         icon:'/unsynced.png'
     },
     pushPending:{
         type:'boolean',
+        showIf:isNotSubdirInProject,
         icon:'/push.png'
     },
     isPackageJson:{
@@ -41,6 +48,18 @@ dirInfo.possibleResponses = {
         icon:'/outdated.png'
     }
 };
+
+function isProject(info, element){
+    return info.isGithub && isNotSubdirInProject(info, element);
+}
+
+var actions={
+    install:{
+        icon:'/ac_install.png',
+        showIf:isProject,
+        title:'pull, prune, install & test'
+    }
+}
 
 function ajaxSimple(params){
     var ajax = new XMLHttpRequest();
@@ -75,29 +94,32 @@ function addDirEntryIcon(span,opts){
     if(span.textContent==='...'){
         span.textContent='';
     }
+    if(opts.invisible){
+        img.style.visibility='hidden';
+    }
     span.appendChild(img);
 }
 
 window.addEventListener('load',function(){
-    var spans=document.querySelectorAll("[data-dirinfo=dirinfo]");
-    for(var iSpan=0; iSpan<spans.length; iSpan++){
-        // var span=spans[iSpan];
-        (function(span){
-            span.textContent='...';
+    var elements=document.querySelectorAll("[data-dirinfo=dirinfo]");
+    for(var iElement=0; iElement<elements.length; iElement++){
+        // var element=elements[iElement];
+        (function(element){
+            element.textContent='...';
             ajaxSimple({
-                url:span.dataset.path,
+                url:element.dataset.path,
                 data:{},
                 onload:function(text){
-                    if(span.textContent==='...'){
-                        span.textContent='';
+                    if(element.textContent==='...'){
+                        element.textContent='';
                     }
-                    span.title=text;
+                    element.title=text;
                     var info=JSON.parse(text);
                     for(var property in info){
                         var value=info[property];
                         var response=dirInfo.possibleResponses[property];
-                        if(response && (!response.showIf || response.showIf(info))){
-                            addDirEntryIcon(span,{
+                        if(response && (!response.showIf || response.showIf(info,element))){
+                            addDirEntryIcon(element,{
                                 icon:response.icon,
                                 value:value===true?property:property+':'+value,
                                 property:property
@@ -116,12 +138,22 @@ window.addEventListener('load',function(){
                             }
                         }
                     }
+                    for(var actionName in actions){
+                        var actionInfo=actions[actionName];
+                        var elementAction=document.getElementById('execaction-'+element.dataset.name);
+                        addDirEntryIcon(elementAction,{
+                            icon:actionInfo.icon,
+                            invisible:!actionInfo.showIf || !actionInfo.showIf(info, element),
+                            value:actionInfo.title,
+                            property:actionName
+                        });
+                    }
                 },
                 onerror:function(text){
-                    span.title=text;
-                    span.textContent='E!';
+                    element.title=text;
+                    element.textContent='E!';
                 }
             });
-        })(spans[iSpan]);
+        })(elements[iElement]);
     }
 });
