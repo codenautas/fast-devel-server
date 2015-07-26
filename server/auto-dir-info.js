@@ -55,9 +55,16 @@ function isProject(info, element){
 
 var actions={
     install:{
-        icon:'/ac_install.png',
+        icon:'/ac-install.png',
         showIf:isProject,
         title:'pull, prune, install & test'
+    },
+    'npm-check-updates--u':{
+        icon:'/ac-npm-check-updates--u.png',
+        showIf:function(info){
+            return info.isPackageJson && info.isOutdated;
+        },
+        title:'npm-check-updates -u'
     }
 }
 
@@ -141,12 +148,17 @@ window.addEventListener('load',function(){
                     for(var actionName in actions){
                         var actionInfo=actions[actionName];
                         var elementAction=document.getElementById('execaction-'+element.dataset.name);
-                        addDirEntryIcon(elementAction,{
-                            icon:actionInfo.icon,
-                            invisible:!actionInfo.showIf || !actionInfo.showIf(info, element),
-                            value:actionInfo.title,
-                            property:actionName
-                        });
+                        if(actionInfo.showIf && actionInfo.showIf(info, element)){
+                            var a=document.createElement('a');
+                            a.href='/execaction/'+actionName+'/'+element.dataset.name;
+                            elementAction.appendChild(a);
+                            addDirEntryIcon(a,{
+                                icon:actionInfo.icon,
+                                // invisible:!actionInfo.showIf || !actionInfo.showIf(info, element),
+                                value:actionInfo.title||actionName,
+                                property:actionName
+                            });
+                        }
                     }
                 },
                 onerror:function(text){
