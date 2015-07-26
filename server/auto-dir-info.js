@@ -65,6 +65,13 @@ var actions={
             return info.isPackageJson && info.isOutdated;
         },
         title:'npm-check-updates -u'
+    },
+    stage:{
+        icon:'/ac-stage.png',
+        showIf:function(info){
+            return info.untracked;
+        },
+        title:'stage (add)'
     }
 }
 

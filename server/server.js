@@ -242,10 +242,12 @@ app.use('/file',serveIndex('..', {
                     html.td({'class':'icon'},fileInfo.stat.isDirectory()?'D':'A'),
                     html.td({'class':fileNameClass},html.a({href:href},fileNameContent)),
                     (fileInfo.stat.isDirectory()?
-                        html.td({'class':'ext-dir'},html.a({href:href},'<DIR>')):
+                        html.td({'class':'ext-dir',colSpan:2},html.a({href:href},'<DIR>')):
                         html.td({'class':'ext'},path.extname(fileInfo.name))
                     ),
-                    html.td({'class':'size'},numeral(fileInfo.stat.size).format()),
+                    (fileInfo.stat.isDirectory()?null:
+                        html.td({'class':'size'},numeral(fileInfo.stat.size).format())
+                    ),
                     html.td({'class':'date'},moment(fileInfo.stat.mtime).format('DD/MM/YYYY HH:mm:ss')),
                     html.td({
                         'class':'info',
