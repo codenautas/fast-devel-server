@@ -6,8 +6,41 @@ var app = express();
 var Promises = require('best-promise');
 var fsPromise = require('fs-promise');
 var jade = require('jade');
+var moment = require('moment');
 var multilang = require('multilang');
+var numeral = require('numeral');
 var path = require('path');
+numeral.language('ar', {
+    delimiters: {
+        thousands: '.',
+        decimal: ','
+    },
+    abbreviations: {
+        thousand: 'Kb',
+        million: 'Mb',
+        billion: 'Gb',
+        trillion: 'Tb'
+    },
+    ordinal : function (number) {
+        return number === 1 ? 'er' : 
+               number === 2 ? 'do' :
+               number === 3 ? 'ro' :
+               number === 4 ? 'to' :
+               number === 5 ? 'to' :
+               number === 6 ? 'to' :
+               number === 7 ? 'mo' :
+               number === 8 ? 'vo' :
+               number === 9 ? 'no' :
+               number === 10 ? 'mo' : 'mo' ;
+    },
+    currency: {
+        symbol: '$'
+    }
+});
+numeral.language('ar');
+var toBinary = require('to-binary');
+
+var html = require('js-to-html').html;
 var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var kill9 = require('kill-9');
@@ -174,7 +207,63 @@ serveIndex.dateTimeToString=function(mtime){
 app.use('/file',serveIndex('..', {
     hidden: true,
     icons: true,
-    view: 'details'
+    view: 'details',
+    template: function(locals, done){
+        if(locals.directory.match(/\/$/)){
+            locals.directory=locals.directory.replace(/\/$/,'');
+        }
+        var content=html.div({'class':'main-dir'},
+        [ 
+            html.div({'class':'path-title'},_.map(locals.directory.split('/'),function(part, index, parts){
+                if(index==parts.length-1) return html.span(part);
+                return html.span([html.a({href: parts.slice(0,index-2).join('/')},part),' / ']);
+            })),
+            html.table({'class':'file-list'},[html.tr({'class':'title'},[
+                html.th(''),
+                html.th('name'),
+                html.th('ext'),
+                html.th('size'),
+                html.th('date'),
+                html.th('plus'),
+            ])].concat(_.map(locals.fileList,function(fileInfo){
+                var href=locals.directory+'/'+fileInfo.name;
+                if(fileInfo.stat.isDirectory()){
+                    var fileNameClass='dir-name';
+                    var fileNameContent=fileInfo.name;
+                }else{
+                    var fileNameClass='name';
+                    var fileNameContent=[
+                        html.span(path.basename(fileInfo.name,path.extname(fileInfo.name))),
+                        html.span({'class':'ext-name'},path.extname(fileInfo.name))
+                    ]
+                }
+                return html.tr([
+                    html.td({'class':'icon'},fileInfo.stat.isDirectory()?'D':'A'),
+                    html.td({'class':fileNameClass},html.a({href:href},fileNameContent)),
+                    (fileInfo.stat.isDirectory()?
+                        html.td({'class':'ext-dir'},html.a({href:href},'<DIR>')):
+                        html.td({'class':'ext'},path.extname(fileInfo.name))
+                    ),
+                    html.td({'class':'size'},numeral(fileInfo.stat.size).format()),
+                    html.td({'class':'date'},moment(fileInfo.stat.mtime).format('DD/MM/YYYY HH:mm:ss')),
+                    html.td({
+                        'data-dirinfo':'dirinfo',
+                        id:"dirinfo-"+fileInfo.name,
+                        'data-path':locals.directory.replace(/^\/file\//,'/dir-info/')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
+                    },locals.directory.replace(/^\/file\//,'/dir-info/')+(fileInfo.name=='..'?'':'/'+fileInfo.name))
+                ]);
+            })))
+        ]);
+        var result=html.html([
+            html.head([
+                html.meta({charset:'utf8'}),
+                html.title(locals.directory+' - fast-devel-server'),
+                html.link({rel:"stylesheet", type:"text/css", href:"/dir.css"})
+            ]),
+            html.body(content)
+        ]);
+        done(null, result.toHtmlText({pretty:true}));
+    }
 }))
 
 var serveConvert=function serveConvert(root, opts){
