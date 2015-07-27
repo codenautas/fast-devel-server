@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 
 var _ = require('lodash');
 var express = require('express');
@@ -109,8 +109,6 @@ var path = require('path');
 
 var extensionServeStatic = require('extension-serve-static');
 var FDH = require('..');
-
-FDH.html4serveIndex(serveIndex);
 
 var server = app.listen(54321, function() {
     console.log('Listening on port %d', server.address().port);
@@ -239,7 +237,9 @@ app.use('/file',serveIndex('..', {
                     ]
                 }
                 return html.tr([
-                    html.td({'class':'icon'},fileInfo.stat.isDirectory()?'D':'A'),
+                    html.td({'class':'icon'},fileInfo.name==='..'?'\uD83D\uDCC2':(fileInfo.stat.isDirectory()?'\uD83D\uDCC1':'\u274f')),
+                    //html.td({'class':'icon'},fileInfo.name==='..'?'\u2711':(fileInfo.stat.isDirectory()?'\u274d':'\u274f')),
+                    // html.td({'class':'icon'},fileInfo.name==='..'?'D':(fileInfo.stat.isDirectory()?'d':'-')),
                     html.td({'class':fileNameClass},html.a({href:href},fileNameContent)),
                     (fileInfo.stat.isDirectory()?
                         html.td({'class':'ext-dir',colSpan:2},html.a({href:href},'<DIR>')):
@@ -272,7 +272,7 @@ app.use('/file',serveIndex('..', {
                 html.title(locals.directory+' - fast-devel-server'),
                 html.link({rel:"stylesheet", type:"text/css", href:"/dir.css"})
             ]),
-            html.body(content)
+            html.body([content,html.script({src:"/auto-dir-info.js"})])
         ]);
         done(null, result.toHtmlText({pretty:true}));
     }
@@ -294,7 +294,13 @@ var serveConvert=function serveConvert(root, opts){
                 return '<H1>ERROR</H1><PRE>'+err;
             }).then(function(buf){
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                res.setHeader('Content-Length', buf.length);
+                if(typeof buf==="string"){
+                    var length=System.Text.ASCIIEncoding.Unicode.GetByteCount(string);
+                }else{
+                    var length=buf.length;
+                }
+                console.log("calculando el tamaño",typeof buf, length, buf.length);
+                res.setHeader('Content-Length', length);
                 res.end(buf);
             });
         }
