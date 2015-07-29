@@ -44,8 +44,15 @@ var html = require('js-to-html').html;
 var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var kill9 = require('kill-9');
+var execToHmtl = require('exec-to-html');
+
+app.use('/ajax-best-promise.js',function(req,res){
+    res.sendFile(process.cwd()+'/node_modules/ajax-best-promise/bin/ajax-best-promise.js');
+});
 
 app.use('/tools',autoDeploy.middleware({pid:1234}));
+
+app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
 
 if(false){
     var MarkdownIt = require('markdown-it');
@@ -107,14 +114,14 @@ if(false){
 var serveIndex = require('serve-index');
 var path = require('path');
 
-var extensionServeStatic = require('extension-serve-static');
+var extensionServe = require('extension-serve');
 var FDH = require('..');
 
 var server = app.listen(54321, function() {
     console.log('Listening on port %d', server.address().port);
 });
 
-var mime = extensionServeStatic.mime;
+var mime = extensionServe.mime;
 
 app.get('/',function(req,res){
     res.end("<h1>Fast Devel Server</h1>");
@@ -210,9 +217,10 @@ app.use('/file',serveIndex('..', {
         if(locals.directory.match(/\/$/)){
             locals.directory=locals.directory.replace(/\/$/,'');
         }
+        var pathParts=locals.directory.split('/');
         var content=html.div({'class':'main-dir'},
         [ 
-            html.div({'class':'path-title'},_.map(locals.directory.split('/'),function(part, index, parts){
+            html.div({'class':'path-title'},_.map(pathParts,function(part, index, parts){
                 if(index==parts.length-1) return html.span(part);
                 return html.span([html.a({href: parts.slice(0,index-2).join('/')},part),' / ']);
             })),
@@ -255,6 +263,7 @@ app.use('/file',serveIndex('..', {
                         'data-dirinfotype':fileInfo.stat.isDirectory() && locals.fileList[0].name==='..' && index?'sub':'',
                         id:"dirinfo-"+fileInfo.name,
                         'data-name':fileInfo.name,
+                        'data-parent':pathParts[pathParts.length-1],
                         'data-path':locals.directory.replace(/^\/file(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
                     }),
                     html.td({
@@ -347,13 +356,13 @@ serveConvert.fileConverters={
 
 app.use('/file',serveConvert('..', {}));
 
-app.use('/file',extensionServeStatic('..', {
+app.use('/file',extensionServe('..', {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:validExts
 }))
 
-app.use(extensionServeStatic('./server', {
+app.use(extensionServe('./server', {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:['js','css','html','png']

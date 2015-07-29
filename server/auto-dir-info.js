@@ -157,7 +157,7 @@ window.addEventListener('load',function(){
                         var elementAction=document.getElementById('execaction-'+element.dataset.name);
                         if(actionInfo.showIf && actionInfo.showIf(info, element)){
                             var a=document.createElement('a');
-                            a.href='/execaction/'+actionName+'/'+element.dataset.name;
+                            a.href='/exec-action/controls/'+actionName+'/'+(element.dataset.name=='..'?element.dataset.parent:element.dataset.name);
                             elementAction.appendChild(a);
                             addDirEntryIcon(a,{
                                 icon:actionInfo.icon,
