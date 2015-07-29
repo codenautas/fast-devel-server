@@ -2,6 +2,8 @@
 
 var dirInfo={};
 
+function eid(x){ return document.getElementById(x); }
+
 function isNotSubdirInProject(info, element){
     return element.dataset.dirinfotype!='sub'; 
 }
@@ -165,6 +167,17 @@ window.addEventListener('load',function(){
                                 value:actionInfo.title||actionName,
                                 property:actionName
                             });
+                            a.onclick=function(event){
+                                event.preventDefault();
+                                var iframe=document.createElement('iframe');
+                                var mainElement=document.body.childNodes[1];
+                                mainElement.id='main-dir';
+                                eid('main-dir').style.cssFloat='left';
+                                eid('main-dir').parentNode.appendChild(iframe);
+                                iframe.style.cssFloat='left';
+                                iframe.style.border='1px solid green';
+                                iframe.src=this.href;
+                            }
                         }
                     }
                 },
