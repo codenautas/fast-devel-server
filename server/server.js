@@ -9,7 +9,7 @@ var jade = require('jade');
 var moment = require('moment');
 var multilang = require('multilang');
 var numeral = require('numeral');
-var path = require('path');
+var Path = require('path');
 numeral.language('ar', {
     delimiters: {
         thousands: '.',
@@ -43,8 +43,10 @@ var toBinary = require('to-binary');
 var html = require('js-to-html').html;
 var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
+var qaControl = require('qa-control');
 var kill9 = require('kill-9');
 var execToHmtl = require('exec-to-html');
+var MiniTools = require('mini-tools');
 
 app.use('/ajax-best-promise.js',function(req,res){
     res.sendFile(process.cwd()+'/node_modules/ajax-best-promise/bin/ajax-best-promise.js');
@@ -112,7 +114,6 @@ if(false){
     }
 }
 var serveIndex = require('serve-index');
-var path = require('path');
 
 var extensionServe = require('extension-serve');
 var FDH = require('..');
@@ -176,11 +177,11 @@ app.use('/info',function(req,res,next){
     var fileName='../'+req.path;
     var fileNameForStat=fileName;
     if(req.query["from-original"]){
-        fileNameForStat=path.dirname(fileName)+'/'+req.query["from-original"];
+        fileNameForStat=Path.dirname(fileName)+'/'+req.query["from-original"];
     }
     fsPromise.stat(fileNameForStat).then(function(stat){
         info.mtime=stat.mtime;
-        if(path.extname(req.path)=='.md'){
+        if(Path.extname(req.path)=='.md'){
             return fsPromise.readFile(fileName, {encoding: 'utf8'}).then(function(content){
                 var matches=content.split('\n')[0].match(/^.*<!-- multilang from\s*(\S*)\s*$/);
                 if(!matches) return {};
@@ -240,8 +241,8 @@ app.use('/file',serveIndex('..', {
                 }else{
                     var fileNameClass='name';
                     var fileNameContent=[
-                        html.span(path.basename(fileInfo.name,path.extname(fileInfo.name))),
-                        html.span({'class':'ext-name'},path.extname(fileInfo.name))
+                        html.span(Path.basename(fileInfo.name,Path.extname(fileInfo.name))),
+                        html.span({'class':'ext-name'},Path.extname(fileInfo.name))
                     ]
                 }
                 return html.tr([
@@ -251,7 +252,7 @@ app.use('/file',serveIndex('..', {
                     html.td({'class':fileNameClass},html.a({href:href},fileNameContent)),
                     (fileInfo.stat.isDirectory()?
                         html.td({'class':'ext-dir',colSpan:2},html.a({href:href},'<DIR>')):
-                        html.td({'class':'ext'},path.extname(fileInfo.name))
+                        html.td({'class':'ext'},Path.extname(fileInfo.name))
                     ),
                     (fileInfo.stat.isDirectory()?null:
                         html.td({'class':'size'},numeral(fileInfo.stat.size).format())
@@ -289,8 +290,8 @@ app.use('/file',serveIndex('..', {
 
 var serveConvert=function serveConvert(root, opts){
     return function(req,res,next){
-        var ext=path.extname(req.path).substring(1);
-        var convert=serveConvert.fileConverters[path.basename(req.path)]||serveConvert.converters[ext];
+        var ext=Path.extname(req.path).substring(1);
+        var convert=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[ext];
         if(!convert){
             next();
         }else{
@@ -370,12 +371,27 @@ app.use(extensionServe('./server', {
 
 app.use('/dir-info',function(req,res){
     Promises.start(function(){
-        return dirInfo.getInfo(path.normalize('..'+req.path), {net:true, cmd:true});
+        return dirInfo.getInfo(Path.normalize('..'+req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
-    }).catch(function(err){
-        console.log('ERROR',err);
-        console.log('stack',err.stack);
-        res.end('<H1>ERROR</H1><PRE>'+err);
-    });
+    }).catch(MiniTools.serveErr(req,res));
+    //}).catch(function(err){
+    //    console.log('ERROR',err);
+    //    console.log('stack',err.stack);
+    //    res.end('<H1>ERROR</H1><PRE>'+err);
+    //});
+});
+
+app.use('/qa-control',function(req,res){
+    Promises.start(function(){
+        var path=Path.normalize(process.cwd()+'/..'+req.path);
+        return qaControl.controlProject(path);
+    }).then(function(warnings){
+        res.end(JSON.stringify(warnings));
+    }).catch(MiniTools.serveErr(req,res));
+    // }).catch(function(err){
+        // console.log('ERROR',err);
+        // console.log('stack',err.stack);
+        // res.end('<H1>ERROR</H1><PRE>'+err);
+    // });
 });

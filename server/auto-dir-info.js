@@ -186,6 +186,26 @@ window.addEventListener('load',function(){
                     element.textContent='E!';
                 }
             });
+            if(isNotSubdirInProject({},element)){
+                ajaxSimple({
+                    url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
+                    data:{},
+                    onload:function(text){
+                        var warnings=JSON.parse(text);
+                        if(warnings.length){
+                            addDirEntryIcon(element,{
+                                icon:'/qa-control.png',
+                                value:text,
+                                property:'qa-control!'
+                            });
+                        }
+                    },
+                    onerror:function(text){
+                        element.title=text;
+                        element.textContent='E!';
+                    }
+                });
+            }
         })(elements[iElement]);
     }
 });
