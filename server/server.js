@@ -261,7 +261,7 @@ app.use('/file',serveIndex('..', {
                     html.td({
                         'class':'info',
                         'data-dirinfo':'dirinfo',
-                        'data-dirinfotype':fileInfo.stat.isDirectory() && locals.fileList[0].name==='..' && index?'sub':'',
+                        'data-dirinfotype':fileInfo.stat.isDirectory()?(locals.fileList[0].name==='..' && index?'sub':'dir'):'file',
                         id:"dirinfo-"+fileInfo.name,
                         'data-name':fileInfo.name,
                         'data-parent':pathParts[pathParts.length-1],

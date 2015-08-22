@@ -182,27 +182,31 @@ window.addEventListener('load',function(){
                     }
                 },
                 onerror:function(text){
-                    element.title=text;
-                    element.textContent='E!';
+                    addDirEntryIcon(element,{
+                        icon:'/mini-error.png',
+                        value:text,
+                        property:'dir-info ERR!'
+                    });
                 }
             });
-            if(isNotSubdirInProject({},element)){
+            if(element.dataset.dirinfotype==='dir' && document.getElementById('dirinfo-package.json')){
                 ajaxSimple({
                     url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
                     data:{},
                     onload:function(text){
                         var warnings=JSON.parse(text);
-                        if(warnings.length){
-                            addDirEntryIcon(element,{
-                                icon:'/qa-control.png',
-                                value:text,
-                                property:'qa-control!'
-                            });
-                        }
+                        addDirEntryIcon(element,{
+                            icon:warnings.length?'/qa-control-warns.png':'/qa-control-ok.png',
+                            value:text,
+                            property:'qa-control!'
+                        });
                     },
                     onerror:function(text){
-                        element.title=text;
-                        element.textContent='E!';
+                        addDirEntryIcon(element,{
+                            icon:'/mini-error.png',
+                            value:text,
+                            property:'qa-control ERR!'
+                        });
                     }
                 });
             }
