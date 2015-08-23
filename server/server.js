@@ -49,7 +49,6 @@ var execToHmtl = require('exec-to-html');
 var MiniTools = require('mini-tools');
 
 app.use('/ajax-best-promise.js',function(req,res){
-    console.log('*** ajax-best-promise');
     res.sendFile(process.cwd()+'/node_modules/ajax-best-promise/bin/ajax-best-promise.js');
 });
 
@@ -130,33 +129,6 @@ app.get('/',function(req,res){
 });
 
 var externalInfoTemplate=null;
-
-app.use('/auto/!EXTERNAL',function(req,res){
-    Promises.Promise.resolve(!!externalInfoTemplate).then(function(catched){
-        return catched||fs.readFile('./server/external.jade',{encoding: 'utf8'}).then(function(jadeContent){
-            externalInfoTemplate=jade.compile(jadeContent);
-        });
-    }).then(function(){
-        res.end(externalInfoTemplate());
-    }).catch(function(err){
-        res.write('Error al mostrar external.jade');
-        res.write(err.toString());
-        res.end();
-        throw err;
-    });
-});
-
-
-fs.readFile('./server/auto.jade',{encoding: 'utf8'}).then(function(jadeContent){
-    var autoTemplate=jade.compile(jadeContent);
-    app.use('/auto',function(req,res,next){
-        res.end(autoTemplate({path:req.path}));
-    });
-}).catch(function(err){
-    console.log('server stopping. ERROR READING auto.jade');
-    console.log(err);
-    process.exit(1);
-});
 
 function middlewareDeLogueo(donde){
     return function(req,res,next){
@@ -266,7 +238,7 @@ var fdsServeIndex = serveIndex('..', {
                         id:"dirinfo-"+fileInfo.name,
                         'data-name':fileInfo.name,
                         'data-parent':pathParts[pathParts.length-1],
-                        'data-path':locals.directory.replace(/^\/file(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
+                        'data-path':locals.directory.replace(/^\/(file|auto)(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
                     }),
                     html.td({
                         'class':'actions',
@@ -290,7 +262,7 @@ var fdsServeIndex = serveIndex('..', {
 });
 
 app.use('/file',fdsServeIndex);
-app.use('/view',fdsServeIndex);
+app.use('/auto',fdsServeIndex);
 
 var serveConvert=function serveConvert(root, opts, adapter){
     if(!adapter){
@@ -367,7 +339,7 @@ serveConvert.fileConverters={
 
 app.use('/file',serveConvert('..', {}));
 
-app.use('/view',serveConvert('..', {}, autoViewer));
+app.use('/auto',serveConvert('..', {}, autoViewer));
 
 app.use('/file',extensionServe('..', {
     index: ['index.html'], 

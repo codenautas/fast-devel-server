@@ -189,7 +189,7 @@ window.addEventListener('load',function(){
                     });
                 }
             });
-            if(element.dataset.dirinfotype==='dir' && document.getElementById('dirinfo-package.json')){
+            if(element.dataset.dirinfotype==='dir'/* && document.getElementById('dirinfo-package.json')*/){
                 ajaxSimple({
                     url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
                     data:{},

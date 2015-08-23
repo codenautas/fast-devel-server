@@ -24,12 +24,13 @@ function changeControlFds(mainElement){
         var info=JSON.parse(response);
         if(mainElement.codenautas_info=='unknown'){
             mainElement.codenautas_info={};
-            mainElement.controlTagLateral.textContent='L';
-            mainElement.controlTagLateral.title='Loaded';
         }else if(mainElement.codenautas_info.mtime<info.mtime){
             mainElement.controlTagLateral.textContent='R';
             mainElement.controlTagLateral.title='Refreshing';
             document.location.reload(true);
+        }else{
+            mainElement.controlTagLateral.textContent='L';
+            mainElement.controlTagLateral.title='Loaded';
         }
         mainElement.codenautas_info.mtime=info.mtime;
     });
