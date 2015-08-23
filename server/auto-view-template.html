@@ -1,0 +1,78 @@
+<script src='/ajax-best-promise.js'></script>
+<script>
+
+function div(styles){
+    styles=styles||{};
+    var div=document.createElement('div');
+    div.style.width=styles.width||'100%';
+    div.style.backgroundColor='#BDF';
+    div.style.float=styles.float||'';
+    div.style.height='100%';
+    div.style.minHeight=styles.minHeight||'20px';
+    return div;
+}
+
+var mainElement;
+
+function changeControlFds(mainElement){
+    mainElement.controlTagLateral.textContent='T';
+    mainElement.controlTagLateral.title='Taking Time';
+    AjaxBestPromise.get({
+        url:'/info'+"##PATH##",
+        data:{}
+    }).then(function(response){
+        var info=JSON.parse(response);
+        if(mainElement.codenautas_info=='unknown'){
+            mainElement.codenautas_info={};
+            mainElement.controlTagLateral.textContent='L';
+            mainElement.controlTagLateral.title='Loaded';
+        }else if(mainElement.codenautas_info.mtime<info.mtime){
+            mainElement.controlTagLateral.textContent='R';
+            mainElement.controlTagLateral.title='Refreshing';
+            document.location.reload(true);
+        }
+        mainElement.codenautas_info.mtime=info.mtime;
+    });
+}
+
+function changeFavicon(src) {
+    // http://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
+    var link = document.createElement('link'),
+        oldLink = document.getElementById('dynamic-favicon');
+    link.id = 'dynamic-favicon';
+    link.rel = 'shortcut icon';
+    link.href = src;
+    if (oldLink) {
+        document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+    document.head = document.head || document.getElementsByTagName('head')[0];
+    changeFavicon('/favicon.png');
+
+    var fc=document.body.firstChild;
+    var lateral=div({"float" :'left', width:'20px', minHeight:Math.max(window.innerHeight,document.body.clientHeight+20)+'px'});
+    var mainElement = lateral;
+    var img = document.createElement('img');
+    img.style.width='18px';
+    img.style.margin='0px';
+    img.src='/favicon.png';
+    mainElement.appendChild(img);
+    mainElement.controlTagLateral = document.createElement('span');
+    mainElement.controlTagLateral.textContent = 'N';
+    mainElement.controlTagLateral.title = 'New';
+    mainElement.appendChild(mainElement.controlTagLateral);
+    mainElement.codenautas_info = "unknown";
+    if(fc){
+        document.body.insertBefore(lateral, fc);
+        document.body.insertBefore(div(), fc);
+    }else{
+        document.body.appendChild(lateral);
+        document.body.appendChild(div());
+    }
+    document.body.appendChild(div());
+    setInterval(function(){ changeControlFds(mainElement) }, 1000);
+});
+</script>

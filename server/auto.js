@@ -56,6 +56,9 @@ function loadFrames(){
                             if(insideFrame){
                                 var newUrl=frame.contentDocument.URL.replace(pattern,'$1/auto/')
                                 var loadedPath='/'+frame.contentDocument.URL.replace(pattern,'');
+                                frame.contentDocument.addEventListener('click',function(){
+                                    alert('ok');
+                                });
                                 var autorefresh=true;
                             }else{
                                 var newUrl='/auto/!EXTERNAL';
