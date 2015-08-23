@@ -57,7 +57,15 @@
     "start": "node node_modules/auto-deploy/auto-deploy-runner.js -- server/server.js",
     "auto-deploy": ""
   },
-  "codenautas": {
-    "run-in": "server"
+  "jshintConfig": {
+    "asi": false,
+    "forin": true,
+    "curly": true
+  },
+  "qa-control": {
+    "package-version": "0.0.1",
+    "run-in": "server",
+    "stability": "designing",
+    "type": "app"
   }
 }

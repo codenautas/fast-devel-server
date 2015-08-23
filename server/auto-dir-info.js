@@ -189,14 +189,16 @@ window.addEventListener('load',function(){
                     });
                 }
             });
-            if(element.dataset.dirinfotype==='dir'/* && document.getElementById('dirinfo-package.json')*/){
+            if(element.dataset.dirinfotype==='dir'){
                 ajaxSimple({
                     url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
                     data:{},
                     onload:function(text){
                         var warnings=JSON.parse(text);
                         addDirEntryIcon(element,{
-                            icon:warnings.length?'/qa-control-warns.png':'/qa-control-ok.png',
+                            icon:warnings.length?
+                                (warnings.indexOf({warning:'no_qa_control_section_in_package_json'})!==false?'/qa-control-na.png':'/qa-control-warns.png'):
+                                '/qa-control-ok.png',
                             value:text,
                             property:'qa-control!'
                         });

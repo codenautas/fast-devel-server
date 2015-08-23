@@ -1,9 +1,19 @@
+<!-- multilang from README.md
+
+
+
+
+NO MODIFIQUE ESTE ARCHIVO. FUE GENERADO AUTOMÁTICAMENTE POR multilang.js
+
+
+
+
+-->
 # fast-devel-server
 Fast developer server for displaying markdown and others
 
 Working in resolving the unsecure dependencies!
 
-<!--multilang v0 en:README.md es:LEEME.md -->
 
 ![designing](https://img.shields.io/badge/stability-desgining-red.svg)
 [![npm version](https://img.shields.io/npm/v/fast-devel-server.svg)](https://npmjs.org/package/fast-devel-server)
@@ -15,66 +25,34 @@ Working in resolving the unsecure dependencies!
 
 <!--multilang buttons-->
 
-language: ![English](https://raw.githubusercontent.com/codenautas/multilang/master/img/lang-en.png)
-also available in:
-[![Spanish](https://raw.githubusercontent.com/codenautas/multilang/master/img/lang-es.png)](LEEME.md) - 
+idioma: ![castellano](https://raw.githubusercontent.com/codenautas/multilang/master/img/lang-es.png)
+también disponible en:
+[![inglés](https://raw.githubusercontent.com/codenautas/multilang/master/img/lang-en.png)](README.md)
 
-<!--lang:en-->
-
-## Install
-
-<!--lang:es--]
 
 ## Instalación
 
-[!--lang:*-->
 
 ```sh
 $ npm install fast-devel-server
 ```
 
-<!--lang:en-->
-
-## USAGE
-
-<!--lang:es--]
 ## USO
 
-[!--lang:*-->
 
 ```js
 npm start
 ```
 
-<!--lang:en-->
-
-And then use your navigator for rendering or viewing and auto refresh your data
-
-<!--lang:es--]
 
 Y luego usa en tu navegador para renderizar o ver y autorefrescar tus datos
 
-[!--lang:*-->
 
 ![in your navigator put http://localhost:54321/auto/your-package/examples/example.txt](https://raw.githubusercontent.com/codenautas/fast-devel-server/master/examples/example.png)
 
-<!--lang: en-->
-
-***You don't need to press F5!***
-
-<!--lang: es--]
-
-***No necesitas refrescar con F5!***
-
-[!--lang:en-->
-
-## License
-
-<!--lang:es--]
 
 ## Licencias
 
-[!--lang:*-->
 
 [MIT](LICENSE)
 
