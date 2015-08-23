@@ -289,30 +289,27 @@ app.use('/file',serveIndex('..', {
 }))
 
 var serveConvert=function serveConvert(root, opts){
+    console.log('*** serverConvert instaled');
     return function(req,res,next){
         var ext=Path.extname(req.path).substring(1);
         var convert=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[ext];
+        console.log('*** serverConvert',req.path,ext,!!convert);
         if(!convert){
+            console.log('*** serverConvert next');
             next();
         }else{
             var fileName=root+'/'+req.path;
             Promises.start(function(){
+                console.log('*** serverConvert.start',fileName);
                 return fsPromise.readFile(fileName, {encoding: 'utf8'});
             }).then(
                 convert
             ).catch(function(err){
+                console.log('*** serverConvert err',err);
                 return '<H1>ERROR</H1><PRE>'+err;
             }).then(function(buf){
-                res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                if(typeof buf==="string"){
-                    var length=System.Text.ASCIIEncoding.Unicode.GetByteCount(string);
-                }else{
-                    var length=buf.length;
-                }
-                console.log("calculando el tamaño",typeof buf, length, buf.length);
-                res.setHeader('Content-Length', length);
-                res.end(buf);
-            });
+                MiniTools.serveText(buf,'html')(req,res,next);
+            }).catch(MiniTools.serveErr(res,req,next));
         }
     };
 }
@@ -332,6 +329,7 @@ serveConvert.converters={
     ini:sourceRenderer('ini'),
     jade:function(content){
         return Promises.start(function(){
+            console.log('*** converting',content.substring(0,10)+'...');
             return jade.render(content,{});
         });
     },
