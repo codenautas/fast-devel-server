@@ -197,7 +197,7 @@ window.addEventListener('load',function(){
                         var warnings=JSON.parse(text);
                         addDirEntryIcon(element,{
                             icon:warnings.length?
-                                (warnings.indexOf({warning:'no_qa_control_section_in_package_json'})!==false?'/qa-control-na.png':'/qa-control-warns.png'):
+                                (/"warning":"no_qa_control_section_in_/.test(text)?'/qa-control-na.png':'/qa-control-warns.png'):
                                 '/qa-control-ok.png',
                             value:text,
                             property:'qa-control!'
