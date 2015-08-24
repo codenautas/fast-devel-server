@@ -1,4 +1,9 @@
 ﻿"use strict";
+/*jshint eqnull:true */
+/*jshint globalstrict:true */
+/*jshint node:true */
+
+// APP
 
 var _ = require('lodash');
 var express = require('express');
@@ -63,14 +68,14 @@ if(false){
         return Promises.start(function(){
             return markdown.render(content);
         });
-    }
+    };
 }else if(false){
     var markdown = require( "markdown" ).markdown;
     var markdownRender=function markdownRender(content){
         return Promises.start(function(){
             return markdown.toHTML(content,'Maruku');
         });
-    }
+    };
 }else if(false){
     var brucedown  = require( "brucedown" );
     var markdownRender=Promises.wrapErrRes(brucedown);
@@ -111,7 +116,7 @@ if(false){
                 }
             });
         });
-    }
+    };
 }
 var serveIndex = require('serve-index');
 
@@ -133,7 +138,7 @@ var externalInfoTemplate=null;
 function middlewareDeLogueo(donde){
     return function(req,res,next){
         next();
-    }
+    };
 }
 
 app.use('/file',middlewareDeLogueo('file'));
@@ -157,16 +162,20 @@ app.use('/info',function(req,res,next){
         if(Path.extname(req.path)=='.md'){
             return fs.readFile(fileName, {encoding: 'utf8'}).then(function(content){
                 var matches=content.split('\n')[0].match(/^.*<!-- multilang from\s*(\S*)\s*$/);
-                if(!matches) return {};
+                if(!matches){
+                    return {};
+                }
                 return {originFileName: matches[1]};
             });
-        };
+        }
         return {};
     }).then(function(moreInfo){
         res.set('Content-Type', 'application/json');
+        /*jshint forin:false */
         for(var attr in moreInfo){
             info[attr]=moreInfo[attr];
         }
+        /*jshint forin:true */
         res.end(JSON.stringify(info));
     }).catch(function(err){
         console.log('ERROR /info stat');
@@ -180,8 +189,8 @@ serveIndex.dateTimeToString=function(mtime){
     if(mtime.toDateString()==today.toDateString()){
         return 'today ' + mtime.toLocaleTimeString();
     }
-    return mtime.toDateString() + ' ' + mtime.toLocaleTimeString()
-}
+    return mtime.toDateString() + ' ' + mtime.toLocaleTimeString();
+};
 
 var fdsServeIndex = serveIndex('..', {
     hidden: true,
@@ -195,7 +204,9 @@ var fdsServeIndex = serveIndex('..', {
         var content=html.div({'class':'main-dir'},
         [ 
             html.div({'class':'path-title'},_.map(pathParts,function(part, index, parts){
-                if(index==parts.length-1) return html.span(part);
+                if(index==parts.length-1){
+                    return html.span(part);
+                }
                 return html.span([html.a({href: parts.slice(0,index-2).join('/')},part),' / ']);
             })),
             html.table({'class':'file-list'},[html.tr({'class':'title'},[
@@ -208,15 +219,17 @@ var fdsServeIndex = serveIndex('..', {
                 html.th('actions'),
             ])].concat(_.map(locals.fileList,function(fileInfo,index){
                 var href=locals.directory+'/'+fileInfo.name;
+                var fileNameClass;
+                var fileNameContent;
                 if(fileInfo.stat.isDirectory()){
-                    var fileNameClass='dir-name';
-                    var fileNameContent=fileInfo.name;
+                    fileNameClass='dir-name';
+                    fileNameContent=fileInfo.name;
                 }else{
-                    var fileNameClass='name';
-                    var fileNameContent=[
+                    fileNameClass='name';
+                    fileNameContent=[
                         html.span(Path.basename(fileInfo.name,Path.extname(fileInfo.name))),
                         html.span({'class':'ext-name'},Path.extname(fileInfo.name))
-                    ]
+                    ];
                 }
                 return html.tr([
                     html.td({'class':'icon'},fileInfo.name==='..'?'\uD83D\uDCC2':(fileInfo.stat.isDirectory()?'\uD83D\uDCC1':'\u274f')),
@@ -286,12 +299,12 @@ var serveConvert=function serveConvert(root, opts, adapter){
             }).catch(MiniTools.serveErr(res,req,next));
         }
     };
-}
+};
 
 function sourceRenderer(type){
     return function(content){
         return markdownRender('```'+type+'\n'+content+'\n```');
-    }
+    };
 }
 
 serveConvert.converters={
@@ -319,7 +332,7 @@ serveConvert.converters={
     xml:sourceRenderer('xml'),
     yaml:sourceRenderer('json'),
     yml:sourceRenderer('json'),
-}
+};
 
 function autoViewer(path){
     return function(htmlContent){
@@ -335,7 +348,7 @@ function autoViewer(path){
 serveConvert.fileConverters={
     '.htaccess': sourceRenderer('apache'),
     'httpd.conf': sourceRenderer('apache'),
-}
+};
 
 app.use('/file',serveConvert('..', {}));
 
@@ -345,13 +358,13 @@ app.use('/file',extensionServe('..', {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:validExts
-}))
+}));
 
 app.use(extensionServe('./server', {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:['js','css','html','png']
-}))
+}));
 
 app.use('/dir-info',function(req,res){
     Promises.start(function(){

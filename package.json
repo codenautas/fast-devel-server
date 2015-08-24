@@ -8,6 +8,7 @@
   "contributors": [{
     "name": "Emilio Platzer", "email": "emilioplatzer@gmail.com"
   }],
+  "main": "server/server.js",
   "dependencies": {
     "express": "^4.13.3",
     "fs-extra": "^0.23.1",
