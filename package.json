@@ -11,7 +11,7 @@
   "main": "server/server.js",
   "dependencies": {
     "express": "^4.13.3",
-    "fs-extra": "^0.23.1",
+    "fs-extra": "^0.24.0",
     "fs-promise": "~0.3.1",
     "highlight.js": "^8.7.0",
     "jade": "^1.11.0",
@@ -33,7 +33,7 @@
     "js-to-html": "~0.4.1",
     "kill-9": "~0.2.3",
     "mini-tools": "~0.1.2",
-    "qa-control": "^0.0.4"
+    "qa-control": "^0.0.9"
   },
   "x": {
     "brucedown": "^1.1.1",
@@ -41,10 +41,10 @@
     "markdown-it": "^4.2.0"
   },
   "devDependencies": {
-    "istanbul": "~0.3.18",
-    "mocha": "~2.2.5",
+    "istanbul": "~0.3.19",
+    "mocha": "~2.3.0",
     "after": "~0.8.1",
-    "supertest": "~1.0.1",
+    "supertest": "~1.1.0",
     "expect.js": "^0.3.1"
   },
   "engines": {
