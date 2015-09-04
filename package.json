@@ -33,7 +33,7 @@
     "js-to-html": "~0.4.1",
     "kill-9": "~0.2.3",
     "mini-tools": "~0.1.2",
-    "qa-control": "^0.0.4"
+    "qa-control": "^0.0.8"
   },
   "x": {
     "brucedown": "^1.1.1",
