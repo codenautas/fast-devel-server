@@ -15,6 +15,7 @@ var moment = require('moment');
 var multilang = require('multilang');
 var numeral = require('numeral');
 var Path = require('path');
+
 numeral.language('ar', {
     delimiters: {
         thousands: '.',
@@ -43,6 +44,7 @@ numeral.language('ar', {
     }
 });
 numeral.language('ar');
+
 var toBinary = require('to-binary');
 
 var html = require('js-to-html').html;
@@ -105,13 +107,15 @@ if(false){
                 if(err){
                     reject(err);
                 }else{
-                    var html='<!doctype html>\n<html><head>'+
-                        '<link href="/markdown.css" media="all" rel="stylesheet" />'+
-                        '<link href="/markdown2.css" media="all" rel="stylesheet" />'+
-                        '<link href="/github.css" media="all" rel="stylesheet" />'+
-                        '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">'+
+                    var html='<!doctype html>\n<html><head>\n'+
+                        '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
+                        '<link href="/markdown2.css" media="all" rel="stylesheet" />\n'+
+                        '<link href="/github.css" media="all" rel="stylesheet" />\n'+
+                        '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
+                        '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
+                        '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
                         ok+
-                        '</article></body></html>';
+                        '\n</article></body></html>';
                     resolve(html);
                 }
             });
@@ -266,7 +270,9 @@ var fdsServeIndex = serveIndex('..', {
             html.head([
                 html.meta({charset:'utf8'}),
                 html.title(locals.directory+' - fast-devel-server'),
-                html.link({rel:"stylesheet", type:"text/css", href:"/dir.css"})
+                html.link({rel:"stylesheet", type:"text/css", href:"/dir.css"}),
+				html.link({rel:"shortcut icon", href:"/favicon.png", type:"image/png"}),
+				html.link({rel:"apple-touch-icon", href:"/favicon.png"})
             ]),
             html.body([content,html.script({src:"/auto-dir-info.js"})])
         ]);
