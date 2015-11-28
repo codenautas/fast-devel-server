@@ -11,13 +11,18 @@ function isNotSubdirInProject(info, element){
 dirInfo.possibleResponses = {
     isGit:{
         type:'boolean',
-        showIf:function isNotGithub(info, element){ return !info.isGithub && element.dataset.dirinfotype!='sub'; },
+        showIf:function isNotGithub(info, element){ return !info.isGithub && !info.isGitlab && element.dataset.dirinfotype!='sub'; },
         icon:'https://git-scm.com/favicon.ico'
     },
     isGithub:{
         type:'boolean',
         showIf:isNotSubdirInProject,
         icon:'https://github.com/fluidicon.png'
+    },
+    isGitlab:{
+        type:'boolean',
+        showIf:isNotSubdirInProject,
+        icon:'https://about.gitlab.com/ico/favicon-32x32.png'
     },
     modifieds:{
         type:'list-of-files',
@@ -197,7 +202,7 @@ window.addEventListener('load',function(){
                         var warnings=JSON.parse(text);
                         addDirEntryIcon(element,{
                             icon:warnings.length?
-                                (/"warning":"no_qa_control_section_in_/.test(text)?'/qa-control-na.png':'/qa-control-warns.png'):
+                                (/"warning":"(no_qa_control_section_in_|no_package_json)/.test(text)?'/qa-control-na.png':'/qa-control-warns.png'):
                                 '/qa-control-ok.png',
                             value:text,
                             property:'qa-control!'

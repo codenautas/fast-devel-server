@@ -340,7 +340,7 @@ serveConvert.converters={
     yml:sourceRenderer('json'),
 };
 
-function autoViewer(path){
+function autoViewer(path, ext){
     return function(htmlContent){
         return Promises.start(function(){
             return fs.readFile('./server/auto-view-template.html', {encoding: 'utf8'});
@@ -361,6 +361,12 @@ app.use('/file',serveConvert('..', {}));
 app.use('/auto',serveConvert('..', {}, autoViewer));
 
 app.use('/file',extensionServe('..', {
+    index: ['index.html'], 
+    extensions:[''], 
+    staticExtensions:validExts
+}));
+
+app.use('/auto',extensionServe('..', {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:validExts
