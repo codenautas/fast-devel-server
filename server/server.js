@@ -11,6 +11,7 @@ var app = express();
 var Promises = require('best-promise');
 var fs = require('fs-promise');
 var jade = require('jade');
+var stylus = require('stylus');
 var moment = require('moment');
 var multilang = require('multilang');
 var numeral = require('numeral');
@@ -288,17 +289,38 @@ var serveConvert=function serveConvert(root, opts, adapter){
     return function(req,res,next){
         var ext=Path.extname(req.path).substring(1);
         var converter=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[ext];
-        if(converter && (req.query.fds || converter.auto)){
+        if(converter && (req.query.fds || converter.auto || converter.others)){
             var fileName=root+'/'+req.path;
-            Promises.start(function(){
-                return fs.readFile(fileName, {encoding: 'utf8'});
-            }).then(
-                converter.convert.bind(null,req.query.fds || converter.auto)
-            ).catch(function(err){
-                return '<H1>ERROR</H1><PRE>'+err;
-            }).then(adapter(req.path)).then(function(buf){
-                MiniTools.serveText(buf.content,buf.type)(req,res,next);
-            }).catch(MiniTools.serveErr(res,req,next));
+            var exts=[ext].concat(converter.others||[]);
+            var p=Promises.resolve({pending:true});
+            var fdsFormat = req.query.fds=='auto' && converter.auto || req.query.fds || converter.auto || 'auto';
+            exts.forEach(function(actualExt){
+                var actualName=fileName.replace(new RegExp('.'+ext+'$'),'.'+actualExt);
+                var converter;
+                p=p.then(function(content){
+                    if(content.pending){
+                        converter=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[actualExt];
+                        return Promises.start(function(){
+                            return fs.readFile(actualName, {encoding: 'utf8'});
+                        }).then(
+                            converter.convert.bind(null,fdsFormat)
+                        ).catch(function(err){
+                            if(err.code=='ENOENT'){
+                                throw err;
+                            }else{
+                                return {content:'<H1>ERROR</H1><PRE>'+err, type:'html'};
+                            }
+                        }).then(adapter(req.path, !!req.query.fds)).then(function(buf){
+                            MiniTools.serveText(buf.content,buf.type)(req,res,next);
+                        }).catch(function(err){
+                            return {pending:true}
+                        })
+                    }else{
+                        return content;
+                    }
+                });
+            });
+            return p.catch(MiniTools.serveErr(res,req,next));
         }else{
             next();
         }
@@ -311,24 +333,38 @@ function sourceRenderer(type){
     };
 }
 
+function jadeRender(fdsFormat, jadeContent){
+    if(fdsFormat=='source'){
+        return sourceRenderer('jade')('source',jadeContent);
+    }else{
+        return Promises.start(function(){
+            return jade.render(jadeContent,{});
+        }).then(function(htmlContent){
+            return {content:htmlContent, type:'html'};
+        });
+    }
+}
+
+function stylusRender(fdsFormat, stylusContent){
+    if(fdsFormat=='source'){
+        return sourceRenderer('stylus')('source',stylusContent);
+    }else{
+        return Promises.start(function(){
+            return stylus.render(stylusContent,{});
+        }).then(function(cssContent){
+            return {content:cssContent, type:'css'};
+        });
+    }
+}
+
 serveConvert.converters={
     ''       :{convert:sourceRenderer('')        ,auto:'source'},
     bat      :{convert:sourceRenderer('dos')     ,auto:'source'},
-    css      :{convert:sourceRenderer('css')     },
+    css      :{convert:sourceRenderer('css')     ,auto:'css'   ,others:['styl']},
     diff     :{convert:sourceRenderer('diff')    ,auto:'source'},
     gitignore:{convert:sourceRenderer('')        ,auto:'source'},
     ini      :{convert:sourceRenderer('ini')     ,auto:'source'},
-    jade     :{convert:function(fdsFormat, jadeContent){
-        if(fdsFormat=='source'){
-            return sourceRenderer('jade')('source',jadeContent);
-        }else{
-            return Promises.start(function(){
-                return jade.render(jadeContent,{});
-            }).then(function(htmlContent){
-                return {content:htmlContent, type:'html'};
-            });
-        }
-    }                                            ,auto:'html'  },
+    jade     :{convert:jadeRender                ,auto:'html'  },
     js       :{convert:sourceRenderer('js')      },
     json     :{convert:sourceRenderer('json')    },
     less     :{convert:sourceRenderer('less')    ,auto:'source'},
@@ -338,15 +374,15 @@ serveConvert.converters={
     php      :{convert:sourceRenderer('php')     ,auto:'source'},
     psql     :{convert:sourceRenderer('sql')     ,auto:'source'},
     sh       :{convert:sourceRenderer('bash')    ,auto:'source'},
-    styl     :{convert:sourceRenderer('styl')    ,auto:'source'},
-    stylus   :{convert:sourceRenderer('stylus')  ,auto:'source'},
+    styl     :{convert:stylusRender              ,auto:'source'},
+    stylus   :{convert:stylusRender              ,auto:'source'},
     sql      :{convert:sourceRenderer('sql')     ,auto:'source'},
     xml      :{convert:sourceRenderer('xml')     ,auto:'source'},
     yaml     :{convert:sourceRenderer('json')    ,auto:'source'},
     yml      :{convert:sourceRenderer('json')    ,auto:'source'},
 };
 
-function autoViewer(path, ext){
+function autoViewer(path){
     return function(content){
         if(content.type==='html'){
             return Promises.start(function(){
