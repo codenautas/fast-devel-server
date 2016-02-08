@@ -48,7 +48,7 @@ numeral.language('ar');
 var toBinary = require('to-binary');
 
 var html = require('js-to-html').html;
-var autoDeploy = require('auto-deploy');
+// var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
 var qaControl = require('qa-control');
 var kill9 = require('kill-9');
@@ -59,29 +59,23 @@ app.use('/ajax-best-promise.js',function(req,res){
     res.sendFile(process.cwd()+'/node_modules/ajax-best-promise/bin/ajax-best-promise.js');
 });
 
-app.use('/tools',autoDeploy.middleware({pid:1234}));
+// app.use('/tools',autoDeploy.middleware({pid:1234}));
+
+app.use(function(req,res,next){
+    next();
+    return ;
+    console.log('path', req.path);
+    console.log('domain', req.domain);
+    console.log('params', req.params);
+    console.log('query', req.query);
+    console.log('req.headers');
+    console.dir(req.headers, {depth:1});
+    next();
+});
 
 app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
 
-if(false){
-    var MarkdownIt = require('markdown-it');
-    var markdown = new MarkdownIt();
-    var markdownRender=function markdownRender(content){
-        return Promises.start(function(){
-            return markdown.render(content);
-        });
-    };
-}else if(false){
-    var markdown = require( "markdown" ).markdown;
-    var markdownRender=function markdownRender(content){
-        return Promises.start(function(){
-            return markdown.toHTML(content,'Maruku');
-        });
-    };
-}else if(false){
-    var brucedown  = require( "brucedown" );
-    var markdownRender=Promises.wrapErrRes(brucedown);
-}else if(true){
+{
     var marked = require("marked");
     marked.setOptions({
         renderer: new marked.Renderer(),
@@ -101,22 +95,26 @@ if(false){
             return require('highlight.js').highlightAuto(code).value;
         }
     });
-    var markdownRender=function markdownRender(content){
+    var markdownRender=function markdownRender(fdsFormat, content){
         return Promises.make(function(resolve, reject){
             marked(content,function(err,ok){
                 if(err){
                     reject(err);
                 }else{
-                    var html='<!doctype html>\n<html><head>\n'+
-                        '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
-                        '<link href="/markdown2.css" media="all" rel="stylesheet" />\n'+
-                        '<link href="/github.css" media="all" rel="stylesheet" />\n'+
-                        '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
-                        '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
-                        '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
-                        ok+
-                        '\n</article></body></html>';
-                    resolve(html);
+                    if(fdsFormat=='html'){
+                        var html='<!doctype html>\n<html><head>\n'+
+                            '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
+                            '<link href="/markdown2.css" media="all" rel="stylesheet" />\n'+
+                            '<link href="/github.css" media="all" rel="stylesheet" />\n'+
+                            '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
+                            '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
+                            '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
+                            ok+
+                            '\n</article></body></html>';
+                        resolve({content:html, type:'html'});
+                    }else{
+                        resolve({content:content, type:'text'});
+                    }
                 }
             });
         });
@@ -289,65 +287,77 @@ var serveConvert=function serveConvert(root, opts, adapter){
     }
     return function(req,res,next){
         var ext=Path.extname(req.path).substring(1);
-        var convert=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[ext];
-        if(!convert){
-            next();
-        }else{
+        var converter=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[ext];
+        if(converter && (req.query.fds || converter.auto)){
             var fileName=root+'/'+req.path;
             Promises.start(function(){
                 return fs.readFile(fileName, {encoding: 'utf8'});
             }).then(
-                convert
+                converter.convert.bind(null,req.query.fds || converter.auto)
             ).catch(function(err){
                 return '<H1>ERROR</H1><PRE>'+err;
             }).then(adapter(req.path)).then(function(buf){
-                MiniTools.serveText(buf,'html')(req,res,next);
+                MiniTools.serveText(buf.content,buf.type)(req,res,next);
             }).catch(MiniTools.serveErr(res,req,next));
+        }else{
+            next();
         }
     };
 };
 
 function sourceRenderer(type){
-    return function(content){
-        return markdownRender('```'+type+'\n'+content+'\n```');
+    return function(fdsFormat, content){
+        return markdownRender('html', '```'+type+'\n'+content.replace(/```/g,'` ` `')+'\n```');
     };
 }
 
 serveConvert.converters={
-    '':sourceRenderer(''),
-    bat:sourceRenderer('dos'),
-    css:sourceRenderer('css'),
-    diff:sourceRenderer('diff'),
-    gitignore:sourceRenderer(''),
-    ini:sourceRenderer('ini'),
-    jade:function(content){
-        return Promises.start(function(){
-            return jade.render(content,{});
-        });
-    },
-    js:sourceRenderer('js'),
-    json:sourceRenderer('json'),
-    less:sourceRenderer('less'),
-    makefile:sourceRenderer('makefile'),
-    markdown:markdownRender,
-    md:markdownRender,
-    php:sourceRenderer('php'),
-    psql:sourceRenderer('sql'),
-    sh:sourceRenderer('bash'),
-    sql:sourceRenderer('sql'),
-    xml:sourceRenderer('xml'),
-    yaml:sourceRenderer('json'),
-    yml:sourceRenderer('json'),
+    ''       :{convert:sourceRenderer('')        ,auto:'source'},
+    bat      :{convert:sourceRenderer('dos')     ,auto:'source'},
+    css      :{convert:sourceRenderer('css')     },
+    diff     :{convert:sourceRenderer('diff')    ,auto:'source'},
+    gitignore:{convert:sourceRenderer('')        ,auto:'source'},
+    ini      :{convert:sourceRenderer('ini')     ,auto:'source'},
+    jade     :{convert:function(fdsFormat, jadeContent){
+        if(fdsFormat=='source'){
+            return sourceRenderer('jade')('source',jadeContent);
+        }else{
+            return Promises.start(function(){
+                return jade.render(jadeContent,{});
+            }).then(function(htmlContent){
+                return {content:htmlContent, type:'html'};
+            });
+        }
+    }                                            ,auto:'html'  },
+    js       :{convert:sourceRenderer('js')      },
+    json     :{convert:sourceRenderer('json')    },
+    less     :{convert:sourceRenderer('less')    ,auto:'source'},
+    makefile :{convert:sourceRenderer('makefile'),auto:'source'},
+    markdown :{convert:markdownRender            ,auto:'html'  },
+    md       :{convert:markdownRender            ,auto:'html'  },
+    php      :{convert:sourceRenderer('php')     ,auto:'source'},
+    psql     :{convert:sourceRenderer('sql')     ,auto:'source'},
+    sh       :{convert:sourceRenderer('bash')    ,auto:'source'},
+    styl     :{convert:sourceRenderer('styl')    ,auto:'source'},
+    stylus   :{convert:sourceRenderer('stylus')  ,auto:'source'},
+    sql      :{convert:sourceRenderer('sql')     ,auto:'source'},
+    xml      :{convert:sourceRenderer('xml')     ,auto:'source'},
+    yaml     :{convert:sourceRenderer('json')    ,auto:'source'},
+    yml      :{convert:sourceRenderer('json')    ,auto:'source'},
 };
 
 function autoViewer(path, ext){
-    return function(htmlContent){
-        return Promises.start(function(){
-            return fs.readFile('./server/auto-view-template.html', {encoding: 'utf8'});
-        }).then(function(jsCode){
-            jsCode = jsCode.replace(/"##PATH##"/g, JSON.stringify(path));
-            return htmlContent.replace(/<\/html>\s*$/m,'\n'+jsCode+'\n</html>');
-        });
+    return function(content){
+        if(content.type==='html'){
+            return Promises.start(function(){
+                return fs.readFile('./server/auto-view-template.html', {encoding: 'utf8'});
+            }).then(function(jsCode){
+                jsCode = jsCode.replace(/"##PATH##"/g, JSON.stringify(path));
+                return {content:content.content.replace(/<\/html>\s*$/m,'\n'+jsCode+'\n</html>'), type:'html'};
+            });
+        }else{
+            return Promises.resolve(content);
+        }
     };
 }
 
