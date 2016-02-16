@@ -240,7 +240,7 @@ var fdsServeIndex = serveIndex('..', {
                     // html.td({'class':'icon'},fileInfo.name==='..'?'D':(fileInfo.stat.isDirectory()?'d':'-')),
                     html.td({'class':fileNameClass},html.a({href:href},fileNameContent)),
                     (fileInfo.stat.isDirectory()?
-                        html.td({'class':'ext-dir',colSpan:2},html.a({href:href},'<DIR>')):
+                        html.td({'class':'ext-dir',colspan:2},html.a({href:href},'<DIR>')):
                         html.td({'class':'ext'},Path.extname(fileInfo.name))
                     ),
                     (fileInfo.stat.isDirectory()?null:

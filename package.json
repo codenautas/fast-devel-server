@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -12,7 +12,7 @@
   "dependencies": {
     "express": "^4.13.3",
     "fs-extra": "^0.26.2",
-    "fs-promise": "~0.3.1",
+    "fs-promise": "~0.4.1",
     "highlight.js": "^9.0.0",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
@@ -21,7 +21,7 @@
     "multilang": "^1.0.11",
     "numeral": "~1.5.3",
     "pygmentize-bundled": "^2.3.0",
-    "serve-index": "1.7.2",
+    "serve-index": "1.7.3",
     "stylus": "^0.53.0",
     "to-binary": "~0.0.1",
 
@@ -31,10 +31,10 @@
     "dir-info": "~1.0.0",
     "exec-to-html": "^0.0.7",
     "extension-serve": "^0.0.4",
-    "js-to-html": "~0.6.3",
+    "js-to-html": "~0.8.0",
     "kill-9": "~0.2.3",
     "mini-tools": "~0.1.4",
-    "qa-control": "0.1.11"
+    "qa-control": "0.1.12"
   },
   "x": {
     "brucedown": "^1.1.1",
@@ -44,7 +44,7 @@
   "devDependencies": {
 
     "istanbul": "~0.4.1",
-    "mocha": "~2.3.4",
+    "mocha": "~2.4.5",
     "after": "~0.8.1",
     "supertest": "~1.1.0",
     "expect.js": "^0.3.1"
