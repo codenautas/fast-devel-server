@@ -10,14 +10,14 @@
   }],
   "main": "server/server.js",
   "dependencies": {
-    "express": "^4.13.3",
-    "fs-extra": "^0.26.2",
+    "express": "^4.13.4",
+    "fs-extra": "^0.26.5",
     "fs-promise": "~0.4.1",
-    "highlight.js": "^9.0.0",
+    "highlight.js": "^9.1.0",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
-    "moment": "^2.10.6",
+    "moment": "^2.11.2",
     "multilang": "^1.0.11",
     "numeral": "~1.5.3",
     "pygmentize-bundled": "^2.3.0",
@@ -28,12 +28,12 @@
     "ajax-best-promise": "~0.0.7",
     "auto-deploy": "~0.0.8",
     "best-promise": "~0.2.4",
-    "dir-info": "~1.0.0",
+    "dir-info": "~1.0.2",
     "exec-to-html": "^0.0.7",
     "extension-serve": "^0.0.4",
     "js-to-html": "~0.8.0",
     "kill-9": "~0.2.3",
-    "mini-tools": "~0.1.4",
+    "mini-tools": "~0.2.3",
     "qa-control": "0.1.12"
   },
   "x": {
@@ -43,10 +43,10 @@
   },
   "devDependencies": {
 
-    "istanbul": "~0.4.1",
+    "istanbul": "~0.4.2",
     "mocha": "~2.4.5",
     "after": "~0.8.1",
-    "supertest": "~1.1.0",
+    "supertest": "~1.2.0",
     "expect.js": "^0.3.1"
   },
   "engines": {
