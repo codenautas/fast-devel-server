@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -11,30 +11,30 @@
   "main": "server/server.js",
   "dependencies": {
     "express": "^4.13.4",
-    "fs-extra": "^0.26.5",
-    "fs-promise": "~0.4.1",
-    "highlight.js": "^9.1.0",
+    "fs-extra": "^0.26.7",
+    "fs-promise": "~0.5.0",
+    "highlight.js": "^9.2.0",
     "jade": "^1.11.0",
-    "lodash": "^3.10.1",
+    "lodash": "^4.6.1",
     "marked": "^0.3.5",
-    "moment": "^2.11.2",
+    "moment": "^2.12.0",
     "multilang": "^1.0.11",
     "numeral": "~1.5.3",
     "pygmentize-bundled": "^2.3.0",
     "serve-index": "1.7.3",
-    "stylus": "^0.53.0",
+    "stylus": "^0.54.2",
     "to-binary": "~0.0.1",
 
     "ajax-best-promise": "~0.0.7",
     "auto-deploy": "~0.0.8",
     "best-promise": "~0.2.4",
-    "dir-info": "~1.0.2",
+    "dir-info": "~1.0.3",
     "exec-to-html": "^0.0.7",
     "extension-serve": "^0.0.4",
-    "js-to-html": "~0.8.0",
+    "js-to-html": "~0.9.0",
     "kill-9": "~0.2.3",
     "mini-tools": "~0.2.3",
-    "qa-control": "0.1.12"
+    "qa-control": "0.1.20"
   },
   "x": {
     "brucedown": "^1.1.1",
@@ -68,7 +68,7 @@
   "qa-control": {
     "package-version": "0.0.1",
     "run-in": "server",
-    "stability": "designing",
+    "stability": "extending",
     "type": "app"
   }
 }
