@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -10,31 +10,31 @@
   }],
   "main": "server/server.js",
   "dependencies": {
-    "express": "^4.13.4",
-    "fs-extra": "^0.26.7",
+    "express": "~4.13.4",
+    "fs-extra": "~0.28.0",
     "fs-promise": "~0.5.0",
-    "highlight.js": "^9.2.0",
-    "jade": "^1.11.0",
-    "lodash": "^4.6.1",
-    "marked": "^0.3.5",
-    "moment": "^2.12.0",
-    "multilang": "^1.0.11",
+    "highlight.js": "~9.3.0",
+    "jade": "~1.11.0",
+    "lodash": "~4.11.1",
+    "moment": "~2.13.0",
+    "multilang": "~1.0.11",
     "numeral": "~1.5.3",
-    "pygmentize-bundled": "^2.3.0",
-    "serve-index": "1.7.3",
-    "stylus": "^0.54.2",
+    "pygmentize-bundled": "~2.3.0",
+    "remarkable": "~1.6.2",
+    "serve-index": "~1.7.3",
+    "stylus": "~0.54.2",
     "to-binary": "~0.0.1",
 
     "ajax-best-promise": "~0.0.7",
     "auto-deploy": "~0.0.8",
     "best-promise": "~0.2.4",
-    "dir-info": "~1.0.5",
-    "exec-to-html": "^0.0.7",
-    "extension-serve": "^0.0.4",
+    "dir-info": "~1.0.6",
+    "exec-to-html": "~0.0.8",
+    "extension-serve-static": "~0.1.6",
     "js-to-html": "~0.9.0",
-    "kill-9": "~0.3.0",
-    "mini-tools": "~0.2.5",
-    "qa-control": "0.2.7"
+    "kill-9": "~0.4.1",
+    "mini-tools": "~0.2.8",
+    "qa-control": "~0.2.11"
   },
   "x": {
     "brucedown": "^1.1.1",
@@ -42,15 +42,14 @@
     "markdown-it": "^4.2.0"
   },
   "devDependencies": {
-
-    "istanbul": "~0.4.2",
-    "mocha": "~2.4.5",
     "after": "~0.8.1",
-    "supertest": "~1.2.0",
-    "expect.js": "^0.3.1"
+    "expect.js": "~0.3.1",
+    "istanbul": "~0.4.3",
+    "mocha": "~2.4.5",
+    "supertest": "~1.2.0"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 0.12.0"
   },
   "scripts": {
     "test": "mocha --reporter spec --bail --check-leaks test/",

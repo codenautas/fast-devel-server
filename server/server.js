@@ -77,53 +77,44 @@ app.use(function(req,res,next){
 app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
 
 {
-    var marked = require("marked");
-    marked.setOptions({
-        renderer: new marked.Renderer(),
-        gfm: true,
-        tables: true,
-        breaks: false,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        highlightx: function (code, lang, callback) {
-            require('pygmentize-bundled')({ lang: lang, format: 'html' }, code, function (err, result) {
-                callback(err, result.toString());
-            });
-        },
-        highlight: function(code){
-            return require('highlight.js').highlightAuto(code).value;
+    var Remarkable = require("remarkable");
+    var hljs       = require('highlight.js') // https://highlightjs.org/ 
+    var md = new Remarkable("full",{
+        html:         true,        // Enable HTML tags in source 
+        highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(lang, str).value;
+                } catch (err) {}
+            }
+            try {
+                return hljs.highlightAuto(str).value;
+            } catch (err) {}
+            return ''; // use external default escaping 
         }
     });
     var markdownRender=function markdownRender(fdsFormat, content){
         return Promises.make(function(resolve, reject){
-            marked(content,function(err,ok){
-                if(err){
-                    reject(err);
-                }else{
-                    if(fdsFormat=='html'){
-                        var html='<!doctype html>\n<html><head>\n'+
-                            '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
-                            '<link href="/markdown2.css" media="all" rel="stylesheet" />\n'+
-                            '<link href="/github.css" media="all" rel="stylesheet" />\n'+
-                            '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
-                            '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
-                            '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
-                            ok+
-                            '\n</article></body></html>';
-                        resolve({content:html, type:'html'});
-                    }else{
-                        resolve({content:content, type:'text'});
-                    }
-                }
-            });
+            if(fdsFormat=='html'){
+                var html='<!doctype html>\n<html><head>\n'+
+                    '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
+                    '<link href="/markdown2.css" media="all" rel="stylesheet" />\n'+
+                    '<link href="/github.css" media="all" rel="stylesheet" />\n'+
+                    '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
+                    '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
+                    '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
+                    md.render(content)+
+                    '\n</article></body></html>';
+                resolve({content:html, type:'html'});
+            }else{
+                resolve({content:content, type:'text'});
+            }
         });
     };
 }
 var serveIndex = require('serve-index');
 
-var extensionServe = require('extension-serve');
+var extensionServe = require('extension-serve-static');
 var FDH = require('..');
 
 var server = app.listen(54321, function() {
