@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -15,9 +15,9 @@
     "fs-promise": "~0.5.0",
     "highlight.js": "~9.3.0",
     "jade": "~1.11.0",
-    "lodash": "~4.11.1",
+    "lodash": "~4.12.0",
     "moment": "~2.13.0",
-    "multilang": "~1.0.11",
+    "multilang": "~1.0.12",
     "numeral": "~1.5.3",
     "pygmentize-bundled": "~2.3.0",
     "remarkable": "~1.6.2",
@@ -28,13 +28,13 @@
     "ajax-best-promise": "~0.0.7",
     "auto-deploy": "~0.0.8",
     "best-promise": "~0.2.4",
-    "dir-info": "~1.0.6",
-    "exec-to-html": "~0.1.0",
+    "dir-info": "~1.0.7",
+    "exec-to-html": "~0.1.1",
     "extension-serve-static": "~0.1.6",
     "js-to-html": "~0.9.0",
     "kill-9": "~0.4.1",
     "mini-tools": "~0.2.8",
-    "qa-control": "~0.2.11"
+    "qa-control": "~0.2.12"
   },
   "x": {
     "brucedown": "^1.1.1",

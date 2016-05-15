@@ -94,6 +94,9 @@ app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
         }
     });
     var markdownRender=function markdownRender(fdsFormat, content){
+        if("resolve problem with comments in remarkable"){
+            content = content.replace(/-->/g, '-->\n');
+        }
         return Promises.make(function(resolve, reject){
             if(fdsFormat=='html'){
                 var html='<!doctype html>\n<html><head>\n'+
