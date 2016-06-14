@@ -358,7 +358,7 @@ serveConvert.converters={
     diff     :{convert:sourceRenderer('diff')    ,auto:'source'},
     gitignore:{convert:sourceRenderer('')        ,auto:'source'},
     ini      :{convert:sourceRenderer('ini')     ,auto:'source'},
-    pug      :{convert:jadeRender                ,auto:'html'  },
+    jade     :{convert:jadeRender                ,auto:'html'  },
     js       :{convert:sourceRenderer('js')      },
     json     :{convert:sourceRenderer('json')    },
     less     :{convert:sourceRenderer('less')    ,auto:'source'},
