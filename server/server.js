@@ -10,7 +10,7 @@ var express = require('express');
 var app = express();
 var Promises = require('best-promise');
 var fs = require('fs-promise');
-var jade = require('jade');
+var pug = require('pug');
 var stylus = require('stylus');
 var moment = require('moment');
 var multilang = require('multilang');
@@ -332,7 +332,7 @@ function jadeRender(fdsFormat, jadeContent){
         return sourceRenderer('jade')('source',jadeContent);
     }else{
         return Promises.start(function(){
-            return jade.render(jadeContent,{});
+            return pug.render(jadeContent,{});
         }).then(function(htmlContent){
             return {content:htmlContent, type:'html'};
         });
@@ -358,7 +358,7 @@ serveConvert.converters={
     diff     :{convert:sourceRenderer('diff')    ,auto:'source'},
     gitignore:{convert:sourceRenderer('')        ,auto:'source'},
     ini      :{convert:sourceRenderer('ini')     ,auto:'source'},
-    jade     :{convert:jadeRender                ,auto:'html'  },
+    pug      :{convert:jadeRender                ,auto:'html'  },
     js       :{convert:sourceRenderer('js')      },
     json     :{convert:sourceRenderer('json')    },
     less     :{convert:sourceRenderer('less')    ,auto:'source'},
