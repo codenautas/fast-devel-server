@@ -138,6 +138,8 @@ function middlewareDeLogueo(donde){
     };
 }
 
+function uriToPath(uri) { return Path.normalize(decodeURI(uri)); };
+
 app.use('/file',middlewareDeLogueo('file'));
 app.use('/info',middlewareDeLogueo('info'));
 
@@ -420,7 +422,7 @@ app.use(extensionServe('./server', {
 
 app.use('/dir-info',function(req,res){
     Promises.start(function(){
-        return dirInfo.getInfo(Path.normalize('..'+req.path), {net:true, cmd:true});
+        return dirInfo.getInfo('..'+uriToPath(req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
     }).catch(MiniTools.serveErr(req,res));
@@ -428,8 +430,7 @@ app.use('/dir-info',function(req,res){
 
 app.use('/qa-control',function(req,res){
     Promises.start(function(){
-        var path=Path.normalize(process.cwd()+'/..'+req.path);
-        return qaControl.controlProject(path);
+        return qaControl.controlProject(process.cwd()+'/..'+uriToPath(req.path));
     }).then(function(warnings){
         res.end(JSON.stringify(warnings));
     }).catch(MiniTools.serveErr(req,res));
