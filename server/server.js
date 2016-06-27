@@ -95,7 +95,7 @@ app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
     });
     var markdownRender=function markdownRender(fdsFormat, content){
         if("resolve problem with comments in remarkable"){
-            content = content.replace(/-->/g, '-->\n');
+            content = content.replace(/\-->/g, '-->\n');
         }
         return Promises.make(function(resolve, reject){
             if(fdsFormat=='html'){
@@ -106,7 +106,7 @@ app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
                     '<link rel="shortcut icon" href="/favicon.png" type="image/png" />\n'+
                     '<link rel="apple-touch-icon", href="/favicon.png" />\n'+
                     '</head><body><article class="markdown-body entry-content" itemprop="mainContentOfPage">\n'+
-                    md.render(content)+
+                    md.render(content).replace(/--\&gt;/g,'-->')+
                     '\n</article></body></html>';
                 resolve({content:html, type:'html'});
             }else{
