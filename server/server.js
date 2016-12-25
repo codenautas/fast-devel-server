@@ -17,7 +17,7 @@ var multilang = require('multilang');
 var numeral = require('numeral');
 var Path = require('path');
 
-numeral.language('ar', {
+numeral.register('locale', 'ar', {
     delimiters: {
         thousands: '.',
         decimal: ','
@@ -44,7 +44,7 @@ numeral.language('ar', {
         symbol: '$'
     }
 });
-numeral.language('ar');
+numeral.locale('ar');
 
 var toBinary = require('to-binary');
 
