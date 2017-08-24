@@ -57,7 +57,7 @@ dirInfo.possibleResponses = {
 };
 
 function isProject(info, element){
-    return info.isGithub && isNotSubdirInProject(info, element);
+    return (info.isGithub || info.isGitlab) && isNotSubdirInProject(info, element);
 }
 
 var actions={

@@ -1,7 +1,7 @@
 {
   "name": "fast-devel-server",
   "description": "Fast developer server for displaying markdown and others",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "repository": "codenautas/fast-devel-server",
@@ -9,32 +9,36 @@
     "name": "Emilio Platzer", "email": "emilioplatzer@gmail.com"
   }],
   "main": "server/server.js",
+  "files": [
+    "img",
+    "server"
+  ],
   "dependencies": {
-    "express": "~4.14.0",
-    "fs-extra": "~1.0.0",
-    "fs-promise": "~1.0.0",
-    "highlight.js": "~9.9.0",
-    "pug": "~2.0.0-beta6",
-    "lodash": "~4.17.3",
-    "moment": "~2.17.1",
-    "multilang": "~1.0.17",
-    "numeral": "~2.0.4",
+    "express": "~4.15.3",
+    "fs-extra": "~3.0.1",
+    "fs-promise": "~2.0.3",
+    "highlight.js": "~9.11.0",
+    "pug": "~2.0.0-rc.1",
+    "lodash": "~4.17.4",
+    "moment": "~2.18.1",
+    "multilang": "~1.0.19",
+    "numeral": "~2.0.6",
     "pygmentize-bundled": "~2.3.0",
     "remarkable": "~1.7.1",
     "serve-index": "~1.8.0",
     "stylus": "~0.54.5",
     "to-binary": "~0.0.1",
 
-    "ajax-best-promise": "~0.2.1",
+    "ajax-best-promise": "~0.3.3",
     "auto-deploy": "~0.0.8",
     "best-promise": "~0.2.4",
     "dir-info": "~1.0.10",
-    "exec-to-html": "~1.0.2",
+    "exec-to-html": "~1.0.5",
     "extension-serve-static": "~0.1.6",
     "js-to-html": "~0.9.2",
     "kill-9": "~0.4.2",
-    "mini-tools": "~0.3.9",
-    "qa-control": "~0.4.8"
+    "mini-tools": "~0.3.16",
+    "qa-control": "~0.4.10"
   },
   "x": {
     "brucedown": "^1.1.1",
@@ -45,11 +49,11 @@
     "after": "~0.8.2",
     "expect.js": "~0.3.1",
     "istanbul": "~0.4.5",
-    "mocha": "~3.2.0",
-    "supertest": "~2.0.1"
+    "mocha": "~3.4.2",
+    "supertest": "~3.0.0"
   },
   "engines": {
-    "node": ">= 0.12.0"
+    "node": ">= 6"
   },
   "scripts": {
     "test": "mocha --reporter spec --bail --check-leaks test/",
@@ -59,13 +63,8 @@
     "start": "node server/server.js",
     "auto-deploy": ""
   },
-  "jshintConfig": {
-    "asi": false,
-    "forin": true,
-    "curly": true
-  },
   "qa-control": {
-    "package-version": "0.0.1",
+    "package-version": "0.3.0",
     "run-in": "server",
     "stability": "extending",
     "type": "app"

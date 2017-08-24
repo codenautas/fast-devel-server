@@ -1,14 +1,10 @@
 ﻿"use strict";
-/*jshint eqnull:true */
-/*jshint globalstrict:true */
-/*jshint node:true */
 
 // APP
 
 var _ = require('lodash');
 var express = require('express');
 var app = express();
-var Promises = require('best-promise');
 var fs = require('fs-promise');
 var pug = require('pug');
 var stylus = require('stylus');
@@ -60,7 +56,6 @@ app.use('/ajax-best-promise.js',function(req,res){
     res.sendFile(process.cwd()+'/node_modules/ajax-best-promise/bin/ajax-best-promise.js');
 });
 
-// app.use('/tools',autoDeploy.middleware({pid:1234}));
 
 app.use(function(req,res,next){
     next();
@@ -74,7 +69,12 @@ app.use(function(req,res,next){
     next();
 });
 
-app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
+///////////////////////////////////////////
+MiniTools.readConfig([{
+    baseDir:'..'
+}, "local-config"], {whenNotExist:'ignore'}).then(function(config){
+
+app.use('/exec-action',execToHmtl.middleware({baseDir:config.baseDir+'/', control:true}));
 
 {
     var Remarkable = require("remarkable");
@@ -97,7 +97,7 @@ app.use('/exec-action',execToHmtl.middleware({baseDir:'../', control:true}));
         if("resolve problem with comments in remarkable"){
             content = content.replace(/\-->/g, '-->\n');
         }
-        return Promises.make(function(resolve, reject){
+        return new Promise(function(resolve, reject){
             if(fdsFormat=='html'){
                 var html='<!doctype html>\n<html><head>\n'+
                     '<link href="/markdown.css" media="all" rel="stylesheet" />\n'+
@@ -151,7 +151,7 @@ app.use('/info',function(req,res,next){
         mtime:null, 
         originFileName:null
     };
-    var fileName='../'+req.path;
+    var fileName=config.baseDir+'/'+req.path;
     var fileNameForStat=fileName;
     if(req.query["from-original"]){
         fileNameForStat=Path.dirname(fileName)+'/'+req.query["from-original"];
@@ -191,7 +191,7 @@ serveIndex.dateTimeToString=function(mtime){
     return mtime.toDateString() + ' ' + mtime.toLocaleTimeString();
 };
 
-var fdsServeIndex = serveIndex('..', {
+var fdsServeIndex = serveIndex(config.baseDir, {
     hidden: true,
     icons: true,
     view: 'details',
@@ -251,7 +251,10 @@ var fdsServeIndex = serveIndex('..', {
                         'data-name':fileInfo.name,
                         'data-parent':pathParts[pathParts.length-1],
                         'data-path':locals.directory.replace(/^\/(file|auto)(?=\/|$)/,'/dir-info')+(fileInfo.name=='..'?'':'/'+fileInfo.name)
-                    }),
+                    },[
+                        html.img({style:'height:18px',src:'space.png'}),
+                        html.img({style:'height:18px',src:'space.png'}),
+                    ]),
                     html.td({
                         'class':'actions',
                         'data-execaction':'execaction',
@@ -288,7 +291,7 @@ var serveConvert=function serveConvert(root, opts, adapter){
         if(converter && (req.query.fds || converter.auto || converter.others)){
             var fileName=root+'/'+req.path;
             var exts=[ext].concat(converter.others||[]);
-            var p=Promises.resolve({pending:true});
+            var p=Promise.resolve({pending:true});
             var fdsFormat = req.query.fds=='auto' && converter.auto || req.query.fds || converter.auto || 'auto';
             exts.forEach(function(actualExt){
                 var actualName=fileName.replace(new RegExp('.'+ext+'$'),'.'+actualExt);
@@ -296,7 +299,7 @@ var serveConvert=function serveConvert(root, opts, adapter){
                 p=p.then(function(content){
                     if(content.pending){
                         converter=serveConvert.fileConverters[Path.basename(req.path)]||serveConvert.converters[actualExt];
-                        return Promises.start(function(){
+                        return Promise.resolve().then(function(){
                             return fs.readFile(actualName, {encoding: 'utf8'});
                         }).then(
                             converter.convert.bind(null,fdsFormat)
@@ -333,7 +336,7 @@ function jadeRender(fdsFormat, jadeContent){
     if(fdsFormat=='source'){
         return sourceRenderer('jade')('source',jadeContent);
     }else{
-        return Promises.start(function(){
+        return Promise.resolve().then(function(){
             return pug.render(jadeContent,{});
         }).then(function(htmlContent){
             return {content:htmlContent, type:'html'};
@@ -345,7 +348,7 @@ function stylusRender(fdsFormat, stylusContent){
     if(fdsFormat=='source'){
         return sourceRenderer('stylus')('source',stylusContent);
     }else{
-        return Promises.start(function(){
+        return Promise.resolve().then(function(){
             return stylus.render(stylusContent,{});
         }).then(function(cssContent){
             return {content:cssContent, type:'css'};
@@ -381,14 +384,14 @@ serveConvert.converters={
 function autoViewer(path){
     return function(content){
         if(content.type==='html'){
-            return Promises.start(function(){
+            return Promise.resolve().then(function(){
                 return fs.readFile('./server/auto-view-template.html', {encoding: 'utf8'});
             }).then(function(jsCode){
                 jsCode = jsCode.replace(/"##PATH##"/g, JSON.stringify(path));
                 return {content:content.content.replace(/<\/html>\s*$/m,'\n'+jsCode+'\n</html>'), type:'html'};
             });
         }else{
-            return Promises.resolve(content);
+            return Promise.resolve(content);
         }
     };
 }
@@ -398,17 +401,17 @@ serveConvert.fileConverters={
     'httpd.conf': sourceRenderer('apache'),
 };
 
-app.use('/file',serveConvert('..', {}));
+app.use('/file',serveConvert(config.baseDir, {}));
 
-app.use('/auto',serveConvert('..', {}, autoViewer));
+app.use('/auto',serveConvert(config.baseDir, {}, autoViewer));
 
-app.use('/file',extensionServe('..', {
+app.use('/file',extensionServe(config.baseDir, {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:validExts
 }));
 
-app.use('/auto',extensionServe('..', {
+app.use('/auto',extensionServe(config.baseDir, {
     index: ['index.html'], 
     extensions:[''], 
     staticExtensions:validExts
@@ -421,17 +424,21 @@ app.use(extensionServe('./server', {
 }));
 
 app.use('/dir-info',function(req,res){
-    Promises.start(function(){
-        return dirInfo.getInfo('..'+uriToPath(req.path), {net:true, cmd:true});
+    Promise.resolve().then(function(){
+        return dirInfo.getInfo(config.baseDir+uriToPath(req.path), {net:true, cmd:true});
     }).then(function(info){
         res.end(JSON.stringify(info));
     }).catch(MiniTools.serveErr(req,res));
 });
 
 app.use('/qa-control',function(req,res){
-    Promises.start(function(){
-        return qaControl.controlProject(process.cwd()+'/..'+uriToPath(req.path));
+    Promise.resolve().then(function(){
+        // return fs.stat()
+        return qaControl.controlProject(config.baseDir+'/'+uriToPath(req.path));
     }).then(function(warnings){
         res.end(JSON.stringify(warnings));
     }).catch(MiniTools.serveErr(req,res));
+});
+
+///////////////////////////////////////////
 });
