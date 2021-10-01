@@ -195,27 +195,27 @@ window.addEventListener('load',function(){
                 }
             });
             if(element.dataset.dirinfotype==='dir'){
-                ajaxSimple({
-                    url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
-                    data:{},
-                    onload:function(text){
-                        var warnings=JSON.parse(text);
-                        addDirEntryIcon(element,{
-                            icon:warnings.length?
-                                (/"warning":"(no_qa_control_section_in_|no_package_json)/.test(text)?'/qa-control-na.png':'/qa-control-warns.png'):
-                                '/qa-control-ok.png',
-                            value:text,
-                            property:'qa-control!'
-                        });
-                    },
-                    onerror:function(text){
-                        addDirEntryIcon(element,{
-                            icon:'/mini-error.png',
-                            value:text,
-                            property:'qa-control ERR!'
-                        });
-                    }
-                });
+                // ajaxSimple({
+                //     url:element.dataset.path.replace(/^\/dir-info\//,'/qa-control/'),
+                //     data:{},
+                //     onload:function(text){
+                //         var warnings=JSON.parse(text);
+                //         addDirEntryIcon(element,{
+                //             icon:warnings.length?
+                //                 (/"warning":"(no_qa_control_section_in_|no_package_json)/.test(text)?'/qa-control-na.png':'/qa-control-warns.png'):
+                //                 '/qa-control-ok.png',
+                //             value:text,
+                //             property:'qa-control!'
+                //         });
+                //     },
+                //     onerror:function(text){
+                //         addDirEntryIcon(element,{
+                //             icon:'/mini-error.png',
+                //             value:text,
+                //             property:'qa-control ERR!'
+                //         });
+                //     }
+                // });
             }
         })(elements[iElement]);
     }

@@ -10,9 +10,7 @@ Working in resolving the unsecure dependencies!
 [![npm-version](https://img.shields.io/npm/v/fast-devel-server.svg)](https://npmjs.org/package/fast-devel-server)
 [![downloads](https://img.shields.io/npm/dm/fast-devel-server.svg)](https://npmjs.org/package/fast-devel-server)
 [![build](https://img.shields.io/travis/codenautas/fast-devel-server/master.svg)](https://travis-ci.org/codenautas/fast-devel-server)
-[![climate](https://img.shields.io/codeclimate/github/codenautas/fast-devel-server.svg)](https://codeclimate.com/github/codenautas/fast-devel-server)
 [![dependencies](https://img.shields.io/david/codenautas/fast-devel-server.svg)](https://david-dm.org/codenautas/fast-devel-server)
-[![qa-control](http://codenautas.com/github/codenautas/fast-devel-server.svg)](http://codenautas.com/github/codenautas/fast-devel-server)
 
 <!--multilang buttons-->
 

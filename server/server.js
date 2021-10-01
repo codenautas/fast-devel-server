@@ -47,7 +47,7 @@ var toBinary = require('to-binary');
 var html = require('js-to-html').html;
 // var autoDeploy = require('auto-deploy');
 var dirInfo = require('dir-info');
-var qaControl = require('qa-control');
+// var qaControl = require('qa-control');
 var kill9 = require('kill-9');
 var execToHmtl = require('exec-to-html');
 var MiniTools = require('mini-tools');
@@ -77,7 +77,7 @@ MiniTools.readConfig([{
 app.use('/exec-action',execToHmtl.middleware({baseDir:config.baseDir+'/', control:true}));
 
 {
-    var Remarkable = require("remarkable");
+    var {Remarkable} = require("remarkable");
     var hljs       = require('highlight.js') // https://highlightjs.org/ 
     var md = new Remarkable("full",{
         html:         true,        // Enable HTML tags in source 
@@ -117,14 +117,14 @@ app.use('/exec-action',execToHmtl.middleware({baseDir:config.baseDir+'/', contro
 }
 var serveIndex = require('serve-index');
 
-var extensionServe = require('extension-serve-static');
+var serveContent = require('serve-content');
 var FDH = require('..');
 
 var server = app.listen(54321, function() {
     console.log('Listening on port %d', server.address().port);
 });
 
-var mime = extensionServe.mime;
+var mime = serveContent.mime;
 
 app.get('/',function(req,res){
     res.end("<h1>Fast Devel Server</h1>");
@@ -405,22 +405,22 @@ app.use('/file',serveConvert(config.baseDir, {}));
 
 app.use('/auto',serveConvert(config.baseDir, {}, autoViewer));
 
-app.use('/file',extensionServe(config.baseDir, {
+app.use('/file',serveContent(config.baseDir, {
     index: ['index.html'], 
     extensions:[''], 
-    staticExtensions:validExts
+    allowedExts:validExts
 }));
 
-app.use('/auto',extensionServe(config.baseDir, {
+app.use('/auto',serveContent(config.baseDir, {
     index: ['index.html'], 
     extensions:[''], 
-    staticExtensions:validExts
+    allowedExts:validExts
 }));
 
-app.use(extensionServe('./server', {
+app.use(serveContent('./server', {
     index: ['index.html'], 
     extensions:[''], 
-    staticExtensions:['js','css','html','png']
+    allowedExts:['js','css','html','png']
 }));
 
 app.use('/dir-info',function(req,res){
@@ -431,14 +431,15 @@ app.use('/dir-info',function(req,res){
     }).catch(MiniTools.serveErr(req,res));
 });
 
-app.use('/qa-control',function(req,res){
-    Promise.resolve().then(function(){
-        // return fs.stat()
-        return qaControl.controlProject(config.baseDir+'/'+uriToPath(req.path));
-    }).then(function(warnings){
-        res.end(JSON.stringify(warnings));
-    }).catch(MiniTools.serveErr(req,res));
-});
+
+// app.use('/qa-control',function(req,res){
+//     Promise.resolve().then(function(){
+//         // return fs.stat()
+//         return qaControl.controlProject(config.baseDir+'/'+uriToPath(req.path));
+//     }).then(function(warnings){
+//         res.end(JSON.stringify(warnings));
+//     }).catch(MiniTools.serveErr(req,res));
+// });
 
 ///////////////////////////////////////////
 });
